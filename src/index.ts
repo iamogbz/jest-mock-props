@@ -5,14 +5,9 @@ const messages = {
 };
 
 class MockProp implements MockProp {
-    get value(): any {
-        return Object.assign(this.propValues.pop() || this.propValue, {
-            mock: this,
-        });
-    }
+    private initialPropValue: any;
     private object: AnyObject;
     private propName: string;
-    private initialPropValue: any;
     private propValue: any;
     private propValues: any[] = [];
 
@@ -41,8 +36,12 @@ class MockProp implements MockProp {
         if (!this.object) {
             throw new Error("Nothing to restore");
         }
-        delete this.object[this.propName];
-        this.object[this.propName] = this.initialPropValue;
+        if (this.object[this.propName]) {
+            delete this.object[this.propName];
+        }
+        if (this.initialPropValue !== undefined) {
+            this.object[this.propName] = this.initialPropValue;
+        }
     }
 
     public mockValue = (v: any): MockProp => {
@@ -64,6 +63,7 @@ class MockProp implements MockProp {
         propName: string;
     }): void => {
         const descriptor = Object.getOwnPropertyDescriptor(object, propName);
+        if (!descriptor) return;
         if (
             descriptor.set ||
             descriptor.get ||
@@ -71,6 +71,11 @@ class MockProp implements MockProp {
         ) {
             throw new Error(messages.error.noMethodSpy);
         }
+    }
+
+    get value(): any {
+        const propValue = this.propValues.pop() || this.propValue;
+        return propValue && Object.assign(propValue, { mock: this });
     }
 }
 

@@ -3,13 +3,29 @@ import extend from "index";
 const mockObject: AnyObject = {
     fn1: (): string => "fnReturnValue",
     prop1: "1",
-    prop2: "2",
+    prop2: 2,
     get propZ() {
         return "z";
     },
 };
 
 beforeAll(() => extend(jest));
+
+it("mocks object undefined property", () => {
+    const testObject: AnyObject = {};
+    const spy = jest.spyOnProp(testObject, "propUndefined");
+    expect(testObject.propUndefined).toEqual(undefined);
+    spy.mockRestore();
+    expect(testObject.propUndefined).toEqual(undefined);
+});
+
+it("mocks object null property", () => {
+    const testObject: AnyObject = { propNull: null };
+    const spy = jest.spyOnProp(testObject, "propNull");
+    expect(testObject.propNull).toEqual(null);
+    spy.mockRestore();
+    expect(testObject.propNull).toEqual(null);
+});
 
 it("mocks object property value", () => {
     const testObject = { ...mockObject };
@@ -30,7 +46,7 @@ it("mocks object property value once", () => {
     spy.mockValueOnce(mockValue2);
     expect(testObject.prop2).toEqual(mockValue2);
     expect(testObject.prop2).toEqual(mockValue1);
-    expect(testObject.prop2).toEqual("2");
+    expect(testObject.prop2).toEqual(2);
 });
 
 it("resets mocked object property", () => {
@@ -67,7 +83,7 @@ it("resets mocked object property in jest.resetAllMocks", () => {
     expect(jest.isMockProp(testObject.prop2)).toBe(true);
     jest.resetAllMocks();
     expect(testObject.prop1).toEqual("1");
-    expect(testObject.prop2).toEqual("2");
+    expect(testObject.prop2).toEqual(2);
     expect(jest.isMockProp(testObject.prop1)).toBe(true);
     expect(jest.isMockProp(testObject.prop2)).toBe(true);
 });
@@ -84,7 +100,7 @@ it("restores mocked object property in jest.restoreAllMocks", () => {
     expect(jest.isMockProp(testObject.prop2)).toBe(true);
     jest.restoreAllMocks();
     expect(testObject.prop1).toEqual("1");
-    expect(testObject.prop2).toEqual("2");
+    expect(testObject.prop2).toEqual(2);
     expect(jest.isMockProp(testObject.prop1)).toBe(false);
     expect(jest.isMockProp(testObject.prop2)).toBe(false);
 });

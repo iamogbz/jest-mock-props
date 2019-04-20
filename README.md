@@ -15,17 +15,7 @@ Extends jest to allow easy mocking of object and module properties.
 Install the extension using [npm](https://docs.npmjs.com/cli/install.html) or [yarn](https://yarnpkg.com/en/docs/usage)
 
 ```sh
-npm install -D jest-mock-props
-```
-
-### Setup
-
-Add to your jest config `setupFilesAfterEnv` a file containing
-
-```js
-import { extend } from "jest-mock-props";
-
-beforeAll(() => extend(jest));
+npm install -D 'jest-mock-props'
 ```
 
 ## API Reference
@@ -54,7 +44,7 @@ This is useful when you want to mock properties in certain test cases and restor
 
 ### The Jest Object
 
-The jest object needs to be extended in every test file. This allows mocked properties to be reset and restored with [`jest.resetAllMocks`](https://jestjs.io/docs/en/jest-object#jestresetallmocks) and [`jest.restoreAllMocks`](https://jestjs.io/docs/en/jest-object#jestrestoreallmocks) respectively. See [setup](#setup) for configuration.
+The jest object needs to be extended in every test file. This allows mocked properties to be reset and restored with [`jest.resetAllMocks`](https://jestjs.io/docs/en/jest-object#jestresetallmocks) and [`jest.restoreAllMocks`](https://jestjs.io/docs/en/jest-object#jestrestoreallmocks) respectively.
 
 #### `jest.isMockProp(prop)`
 
@@ -79,6 +69,9 @@ module.exports = video;
 Example test:
 
 ```js
+import extend from "jest-mock-props";
+extend(jest);
+
 const video = require('./video');
 
 it('gets video length', () => {
