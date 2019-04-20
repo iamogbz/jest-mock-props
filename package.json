@@ -33,6 +33,9 @@
             "./tests",
             "./node_modules"
         ],
+        "setupFilesAfterEnv": [
+            "./config/setupTests.ts"
+        ],
         "testPathIgnorePatterns": [
             "./artifacts/",
             "./node_modules/"

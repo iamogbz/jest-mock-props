@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`does not mock object getter 1`] = `"Can not spy on method. Please use \`jest.spyOn\`"`;
+
+exports[`does not mock object method 1`] = `"Can not spy on method. Please use \`jest.spyOn\`"`;
+
+exports[`does not mock object setter 1`] = `"Can not spy on method. Please use \`jest.spyOn\`"`;
