@@ -34,6 +34,17 @@ it("mocks object property value once", () => {
     expect(testObject.prop2).toEqual("2");
 });
 
+it("resets mocked object property", () => {
+    const testObject = { ...mockObject };
+    const mockValue = 99;
+    const spy = jest.spyOnProp(testObject, "prop1").mockValue(mockValue);
+    expect(testObject.prop1).toEqual(mockValue);
+    expect(jest.isMockProp(testObject.prop1)).toBe(true);
+    spy.mockReset();
+    expect(testObject.prop1).toEqual("1");
+    expect(jest.isMockProp(testObject.prop1)).toBe(true);
+});
+
 it("restores mocked object property", () => {
     const testObject = { ...mockObject };
     const mockValue = 99;
@@ -43,6 +54,40 @@ it("restores mocked object property", () => {
     spy.mockRestore();
     expect(testObject.prop1).toEqual("1");
     expect(jest.isMockProp(testObject.prop1)).toBe(false);
+});
+
+it("resets mocked object property in jest.resetAllMocks", () => {
+    const testObject = { ...mockObject };
+    const mockValue1 = 99;
+    const mockValue2 = 100;
+    jest.spyOnProp(testObject, "prop1").mockValue(mockValue1);
+    jest.spyOnProp(testObject, "prop2").mockValue(mockValue2);
+    expect(testObject.prop1).toEqual(mockValue1);
+    expect(testObject.prop2).toEqual(mockValue2);
+    expect(jest.isMockProp(testObject.prop1)).toBe(true);
+    expect(jest.isMockProp(testObject.prop2)).toBe(true);
+    jest.resetAllMocks();
+    expect(testObject.prop1).toEqual("1");
+    expect(testObject.prop2).toEqual("2");
+    expect(jest.isMockProp(testObject.prop1)).toBe(true);
+    expect(jest.isMockProp(testObject.prop2)).toBe(true);
+});
+
+it("restores mocked object property in jest.restoreAllMocks", () => {
+    const testObject = { ...mockObject };
+    const mockValue1 = 99;
+    const mockValue2 = 100;
+    jest.spyOnProp(testObject, "prop1").mockValue(mockValue1);
+    jest.spyOnProp(testObject, "prop2").mockValue(mockValue2);
+    expect(testObject.prop1).toEqual(mockValue1);
+    expect(testObject.prop2).toEqual(mockValue2);
+    expect(jest.isMockProp(testObject.prop1)).toBe(true);
+    expect(jest.isMockProp(testObject.prop2)).toBe(true);
+    jest.restoreAllMocks();
+    expect(testObject.prop1).toEqual("1");
+    expect(testObject.prop2).toEqual("2");
+    expect(jest.isMockProp(testObject.prop1)).toBe(false);
+    expect(jest.isMockProp(testObject.prop2)).toBe(false);
 });
 
 it("does not mock object method", () => {

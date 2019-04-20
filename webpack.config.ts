@@ -22,8 +22,8 @@ const configuration: Configuration = {
     },
     output: {
         filename: "[name].js",
-        path: path.resolve(__dirname, "lib"),
         libraryTarget: "commonjs",
+        path: path.resolve(__dirname, "lib"),
     },
     plugins: [new CopyPlugin(["package.json"])],
     resolve: {

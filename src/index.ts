@@ -17,7 +17,7 @@ class MockProp implements MockProp {
     private propValues: any[] = [];
 
     constructor({ object, propName }: { object: AnyObject; propName: string }) {
-        this.validate(object, propName);
+        this.validate({ object, propName });
         this.object = object;
         this.propName = propName;
         this.initialPropValue = object ? object[propName] : undefined;
@@ -56,7 +56,13 @@ class MockProp implements MockProp {
         return this;
     }
 
-    private validate = (object: AnyObject, propName: string): void => {
+    private validate = ({
+        object,
+        propName,
+    }: {
+        object: AnyObject;
+        propName: string;
+    }): void => {
         const descriptor = Object.getOwnPropertyDescriptor(object, propName);
         if (
             descriptor.set ||
@@ -68,22 +74,24 @@ class MockProp implements MockProp {
     }
 }
 
-// const spies: Set<MockProp> = new Set();
+const spies: Set<MockProp> = new Set();
 const extend = (jestInstance: typeof jest) => {
+    const resetAllMocks = jestInstance.resetAllMocks;
+    const restoreAllMocks = jestInstance.restoreAllMocks;
     Object.assign(jestInstance, {
         isMockProp: (object: any): boolean =>
             object && object.mock instanceof MockProp,
-        // resetAllMocks: (): void => {
-        //     spies.forEach(spy => spy.mockReset());
-        //     jestInstance.resetAllMocks();
-        // },
-        // restoreAllMocks: (): void => {
-        //     spies.forEach(spy => spy.mockRestore());
-        //     jestInstance.restoreAllMocks();
-        // },
+        resetAllMocks: (): void => {
+            resetAllMocks();
+            spies.forEach(spy => spy.mockReset());
+        },
+        restoreAllMocks: (): void => {
+            restoreAllMocks();
+            spies.forEach(spy => spy.mockRestore());
+        },
         spyOnProp: (object: AnyObject, propName: string): MockProp => {
             const spy = new MockProp({ object, propName });
-            // spies.add(spy);
+            spies.add(spy);
             return spy;
         },
     });
