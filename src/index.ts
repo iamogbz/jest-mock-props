@@ -77,7 +77,7 @@ class MockProp implements MockProp {
 }
 
 const spies: Set<MockProp> = new Set();
-const extend = (jestInstance: typeof jest) => {
+export const extend = (jestInstance: typeof jest) => {
     const resetAllMocks = jestInstance.resetAllMocks;
     const restoreAllMocks = jestInstance.restoreAllMocks;
     Object.assign(jestInstance, {
@@ -98,5 +98,3 @@ const extend = (jestInstance: typeof jest) => {
         },
     });
 };
-
-export default extend; // tslint:disable-line: no-default-export

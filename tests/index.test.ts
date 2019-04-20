@@ -1,4 +1,4 @@
-import extend from "index";
+import * as mockProps from "index";
 
 const mockObject: AnyObject = {
     fn1: (): string => "fnReturnValue",
@@ -9,7 +9,7 @@ const mockObject: AnyObject = {
     },
 };
 
-beforeAll(() => extend(jest));
+beforeAll(() => mockProps.extend(jest));
 
 it("mocks object undefined property", () => {
     const testObject: AnyObject = {};
