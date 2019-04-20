@@ -2,7 +2,6 @@
     "compilerOptions": {
         "baseUrl": "./src",
         "declaration": true,
-        "moduleResolution": "node",
         "outDir": "./built",
         "paths": { "*": ["*", "./@types/*"] },
         "target": "es6",
