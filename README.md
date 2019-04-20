@@ -69,8 +69,8 @@ module.exports = video;
 Example test:
 
 ```js
-import extend from "jest-mock-props";
-extend(jest);
+import * as mockProps from "jest-mock-props";
+mockProps.extend(jest);
 
 const video = require('./video');
 
