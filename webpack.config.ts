@@ -14,6 +14,7 @@ const configuration: Configuration = {
                 use: {
                     loader: "babel-loader",
                     options: {
+                        plugins: ["@babel/plugin-proposal-class-properties"],
                         presets: ["@babel/preset-typescript"],
                     },
                 },
@@ -22,7 +23,6 @@ const configuration: Configuration = {
     },
     output: {
         filename: "[name].js",
-        libraryTarget: "commonjs",
         path: path.resolve(__dirname, "lib"),
     },
     plugins: [new CopyPlugin(["package.json"])],
