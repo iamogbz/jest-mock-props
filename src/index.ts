@@ -15,7 +15,7 @@ class MockProp implements MockProp {
         this.validate({ object, propName });
         this.object = object;
         this.propName = propName;
-        this.initialPropValue = object ? object[propName] : undefined;
+        this.initialPropValue = object[propName];
         this.propValue = this.initialPropValue;
         if (object) {
             const get = () => this.value;
@@ -33,9 +33,6 @@ class MockProp implements MockProp {
     }
 
     public mockRestore = (): void => {
-        if (!this.object) {
-            throw new Error("Nothing to restore");
-        }
         if (this.object[this.propName]) {
             delete this.object[this.propName];
         }

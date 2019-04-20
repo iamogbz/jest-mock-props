@@ -5,3 +5,5 @@ exports[`does not mock object getter 1`] = `"Can not spy on method. Please use \
 exports[`does not mock object method 1`] = `"Can not spy on method. Please use \`jest.spyOn\`"`;
 
 exports[`does not mock object setter 1`] = `"Can not spy on method. Please use \`jest.spyOn\`"`;
+
+exports[`throws error on mockClear 1`] = `"Nothing to clear"`;

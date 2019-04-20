@@ -134,3 +134,10 @@ it("does not mock object setter", () => {
     testObject.propY = 4;
     expect(testObject._value).toEqual(4);
 });
+
+it("throws error on mockClear", () => {
+    const testObject = { ...mockObject };
+    const spy = jest.spyOnProp(testObject, "prop1");
+    expect(jest.isMockProp(testObject.prop1)).toBe(true);
+    expect(spy.mockClear).toThrowErrorMatchingSnapshot();
+});
