@@ -22,11 +22,14 @@ const configuration: Configuration = {
         ],
     },
     output: {
-        filename: "[name].js",
+        filename: "main.js",
         libraryTarget: "commonjs",
         path: path.resolve(__dirname, "lib"),
     },
-    plugins: [new CopyPlugin(["package.json"])],
+    plugins: [
+        new CopyPlugin(["package.json"]),
+        new CopyPlugin([{ from: "src/@types/index.d.ts", to: "main.d.ts" }]),
+    ],
     resolve: {
         extensions: [".js", ".ts"],
         modules: [path.resolve("./src"), path.resolve("./node_modules")],

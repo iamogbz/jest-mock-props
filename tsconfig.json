@@ -1,13 +1,14 @@
 {
     "compilerOptions": {
         "baseUrl": "./src",
+        "declaration": true,
         "outDir": "./built",
-        "paths": { "*": ["*", "../tests/*", "../tests/@types/*"] },
+        "paths": { "*": ["*", "./@types/*"] },
         "target": "es6",
         "allowSyntheticDefaultImports": true,
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
         "noImplicitAny": true
     },
-    "exclude": ["node_modules"]
+    "exclude": ["lib", "node_modules"]
 }

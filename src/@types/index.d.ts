@@ -1,3 +1,7 @@
+interface AnyObject {
+    [key: string]: any;
+}
+
 declare interface MockProp {
     mockClear(): void;
     mockReset(): void;
