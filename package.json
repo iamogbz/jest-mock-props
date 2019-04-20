@@ -5,8 +5,10 @@
     "main": "index.js",
     "scripts": {
         "commitlint": "commitlint-travis",
-        "build": "webpack",
+        "build": "webpack --mode=production",
+        "build-watch": "webpack --mode=development  --watch",
         "test": "jest",
+        "test-watch": "jest --watch",
         "commit": "git-cz",
         "release": "semantic-release"
     },
@@ -16,14 +18,26 @@
             "@semantic-release/commit-analyzer",
             "@semantic-release/release-notes-generator",
             "@semantic-release/github",
-            "@semantic-release/npm"
+            [
+                "@semantic-release/npm",
+                {
+                    "pkgRoot": "./lib"
+                }
+            ]
         ]
     },
     "jest": {
+        "preset": "ts-jest",
+        "moduleDirectories": [
+            "./src",
+            "./tests",
+            "./node_modules"
+        ],
         "testPathIgnorePatterns": [
             "./artifacts/",
             "./node_modules/"
         ],
+        "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$",
         "coverageDirectory": "./artifacts/coverage"
     },
     "commitlint": {
@@ -39,7 +53,12 @@
     "lint-staged": {
         "linters": {
             "*.js": [
-                "eslint",
+                "eslint"
+            ],
+            "*.ts": [
+                "tslint"
+            ],
+            "*.{js,ts}": [
                 "jest --bail --findRelatedTests"
             ]
         },
