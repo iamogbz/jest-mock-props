@@ -8,7 +8,6 @@ const mockObject: AnyObject = {
         return "z";
     },
 };
-// const mockProps = ["fn1", "prop1", "prop2", "propZ"];
 
 beforeAll(() => extend(jest));
 
