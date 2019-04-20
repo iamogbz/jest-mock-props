@@ -28,7 +28,7 @@ These are the methods available on every mocked property object.
 
 #### `mockProp.mockClear()`
 
-**This throws an error**. Only implemented to differentiate behaviour from [`mockProp.mockReset()`](](#mockpropmockreset)). This does not change the mocked value, therefore is unaffected by `jest.clearAllMocks`.
+**This throws an error**. Only implemented to differentiate behaviour from [`mockProp.mockReset()`](#mockpropmockreset). This does not change the mocked value, therefore is unaffected by `jest.clearAllMocks`.
 
 #### `mockProp.mockReset()`
 
