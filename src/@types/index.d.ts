@@ -15,3 +15,5 @@ declare namespace jest {
     const isMockProp: (object: any) => boolean;
     const spyOnProp: (object: AnyObject, propName: string) => MockProp;
 }
+
+export declare const extend: (jestInstance: typeof jest) => void;
