@@ -1,7 +1,7 @@
 {
     "name": "boilerplate",
-    "version": "0.0.1",
-    "description": "NodeJS Boilerplate with precommit test and linting configured",
+    "version": "0.0.0",
+    "description": "Mock module and object properties",
     "main": "index.js",
     "scripts": {
         "commitlint": "commitlint-travis",
@@ -55,7 +55,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/iamogbz/node-js-boilerplate.git"
+        "url": "git+https://github.com/iamogbz/jest-mock-props.git"
     },
     "keywords": [
         "node",
@@ -70,9 +70,9 @@
     "author": "iamogbz",
     "license": "GPL-3.0",
     "bugs": {
-        "url": "https://github.com/iamogbz/node-js-boilerplate/issues"
+        "url": "https://github.com/iamogbz/jest-mock-props/issues"
     },
-    "homepage": "https://github.com/iamogbz/node-js-boilerplate#readme",
+    "homepage": "https://github.com/iamogbz/jest-mock-props#readme",
     "engines": {
         "node": ">=10.4.0",
         "npm": ">=6.1.0"
@@ -84,29 +84,33 @@
         "@commitlint/cli": "^7.5.2",
         "@commitlint/config-conventional": "^7.5.0",
         "@commitlint/travis-cli": "^7.5.2",
+        "@types/copy-webpack-plugin": "^4.4.3",
+        "@types/jest": "^24.0.9",
+        "@types/node": "^11.12.2",
+        "@types/source-map": "^0.5.2",
+        "@types/webpack": "^4.4.25",
         "acorn": "^6.1.1",
         "babel-eslint": "^10.0.1",
         "babel-loader": "^8.0.5",
         "babel-plugin-transform-class-properties": "^6.24.1",
         "commitizen": "^3.0.7",
+        "copy-webpack-plugin": "^5.0.2",
         "cz-conventional-changelog": "^2.1.0",
         "eslint": "^5.16.0",
         "eslint-config-airbnb": "^17.1.0",
         "eslint-config-prettier": "^4.1.0",
         "eslint-plugin-import": "^2.16.0",
-        "eslint-plugin-jsx-a11y": "^6.2.1",
         "eslint-plugin-prettier": "^3.0.1",
-        "eslint-plugin-react": "^7.12.4",
         "husky": "^1.3.1",
         "jest": "^24.1.0",
         "lint-staged": "^8.1.4",
         "prettier": "^1.16.4",
         "rxjs": "^6.4.0",
-        "semantic-release": "^15.13.3",
-        "stylelint": "^10.0.0",
-        "stylelint-config-standard": "^18.2.0",
-        "stylelint-config-styled-components": "^0.1.1",
-        "stylelint-processor-styled-components": "^1.5.2",
+        "semantic-release": "^15.13.12",
+        "ts-jest": "^24.0.0",
+        "ts-node": "^8.0.2",
+        "tslint": "^5.13.0",
+        "typescript": "^3.3.3333",
         "webpack": "^4.29.6",
         "webpack-cli": "^3.2.3"
     }
