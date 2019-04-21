@@ -173,7 +173,7 @@ it("does not mock object undefined property", () => {
     expect(mockObject.propUndefined).toBeUndefined();
 });
 
-it("does not mock object method", () => {
+it("does not mock object method property", () => {
     expect(() =>
         jest.spyOnProp(mockObject, "fn1"),
     ).toThrowErrorMatchingSnapshot();
@@ -181,7 +181,7 @@ it("does not mock object method", () => {
     expect(mockObject.fn1()).toEqual("fnReturnValue");
 });
 
-it("does not mock object getter", () => {
+it("does not mock object getter property", () => {
     expect(() =>
         jest.spyOnProp(mockObject, "propZ"),
     ).toThrowErrorMatchingSnapshot();
@@ -189,7 +189,7 @@ it("does not mock object getter", () => {
     expect(mockObject.propZ).toEqual("z");
 });
 
-it("does not mock object setter", () => {
+it("does not mock object setter property", () => {
     const testObject = {
         _value: 2,
         set propY(v: number) {
