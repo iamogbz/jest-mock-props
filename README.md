@@ -20,11 +20,11 @@ npm install -D 'jest-mock-props'
 
 ## API Reference
 
-### Mock Properties
+### Mock Property Spy
 
-Mock properties are used as "spies", because they let you spy on the behavior of a property that is accessed indirectly by some other code. Mock properties are readonly until the object original value is restored.
+Mock properties have "spies" that let you control the behavior of a property that is accessed indirectly by some other code.
 
-These are the methods available on every mocked property object.
+These are the methods available on every mocked property spy object.
 
 #### `mockProp.mockClear()`
 
@@ -42,6 +42,16 @@ Restores the original (non-mocked) value.
 
 This is useful when you want to mock properties in certain test cases and restore the original value in others.
 
+### Mock Property Value
+
+Accessing a mocked property gives the current value as well as a reference to the spy that controls it.
+
+#### `.mock`
+
+All mocked property values have a `mock` property that references the spy.
+
+**Note**: This does not apply to `undefined` and `null` values.
+
 ### The Jest Object
 
 The jest object needs to be extended in every test file. This allows mocked properties to be reset and restored with [`jest.resetAllMocks`](https://jestjs.io/docs/en/jest-object#jestresetallmocks) and [`jest.restoreAllMocks`](https://jestjs.io/docs/en/jest-object#jestrestoreallmocks) respectively.
@@ -52,39 +62,47 @@ Determines if the given object property has been mocked.
 
 #### `jest.spyOnProp(object, propertyName)`
 
-Creates a mock property similar to `jest.prop` but this is attached to `object[propertyName]`. Returns a mock property object.
+Creates a mock property attached to `object[propertyName]` and returns a mock property spy object, which controls all access to the object property. Throws an error if the object property was not defined.
 
-Note: By default, `spyOnProp` preserves the object property value. If you want to overwrite the original value, you can use `jest.spyOnProp(object, methodName).mockValue(customValue);` or [`jest.spyOn(object, methodName, accessType?)`](https://jestjs.io/docs/en/jest-object#jestspyonobject-methodname-accesstype) to spy on a getter or a setter.
+**Note**: By default, `spyOnProp` preserves the object property value. If you want to overwrite the original value, you can use `jest.spyOnProp(object, methodName).mockValue(customValue);` or [`jest.spyOn(object, methodName, accessType?)`](https://jestjs.io/docs/en/jest-object#jestspyonobject-methodname-accesstype) to spy on a getter or a setter.
 
-Example:
+## Example
+
+### file.js
 
 ```js
 const video = {
-  length: 1000,
+    length: 1000,
 };
 
 module.exports = video;
 ```
 
-Example test:
+### file.test.js
 
 ```js
 import * as mockProps from "jest-mock-props";
 mockProps.extend(jest);
 
-const video = require('./video');
+const video = require("./video");
 
-it('gets video length', () => {
-  const spy = jest.spyOnProp(video, 'length');
-  spy.mockValueOnce(200).mockValueOnce(400).mockValueOnce(600);
-  expect(video.length).toEqual(600);
-  expect(video.length).toEqual(400);
+it("mocks video length", () => {
+    const spy = jest.spyOnProp(video, "length");
+    spy.mockValueOnce(200)
+        .mockValueOnce(400)
+        .mockValueOnce(600);
+    expect(video.length).toEqual(600);
+    expect(video.length).toEqual(400);
 
-  spy.mockReset();
-  expect(video.length).toEqual(1000);
-  expect(jest.isMockProp(video.length)).toBe(true);
+    video.length = 512;
+    expect(video.length).toEqual(1000);
+    expect(video.length.mock).toEqual(spy);
 
-  spy.mockRestore();
-  expect(jest.isMockProp(video.length)).toBe(false);
+    spy.mockReset();
+    expect(video.length).toEqual(1000);
+    expect(jest.isMockProp(video.length)).toBe(true);
+
+    spy.mockRestore();
+    expect(jest.isMockProp(video.length)).toBe(false);
 });
 ```

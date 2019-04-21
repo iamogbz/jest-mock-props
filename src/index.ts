@@ -1,6 +1,10 @@
 export const messages = {
     error: {
-        noMethodSpy: "Can not spy on method. Please use `jest.spyOn`",
+        noMethodSpy: (p: string) =>
+            `Cannot spy on the property '${p}' because it is a function. Please use \`jest.spyOn\`.`,
+        noMockClear: "Cannot `mockClear` on property spy.",
+        noUndefinedSpy: (prop: string) =>
+            `Cannot spy on the property '${prop}' because it is not defined.`,
     },
     warn: {
         noIsMockPropValue: `Checking \`isMockProp\` using value is deprecated.
@@ -37,7 +41,7 @@ class MockProp implements MockProp {
     }
 
     public mockClear = (): void => {
-        throw new Error("Nothing to clear");
+        throw new Error(messages.error.noMockClear);
     }
 
     public mockReset = (): void => {
@@ -86,13 +90,15 @@ class MockProp implements MockProp {
         propName: string;
     }): void => {
         const descriptor = Object.getOwnPropertyDescriptor(object, propName);
-        if (!descriptor) return;
+        if (!descriptor) {
+            throw new Error(messages.error.noUndefinedSpy(propName));
+        }
         if (
             descriptor.set ||
             descriptor.get ||
             descriptor.value instanceof Function
         ) {
-            throw new Error(messages.error.noMethodSpy);
+            throw new Error(messages.error.noMethodSpy(propName));
         }
     }
 
