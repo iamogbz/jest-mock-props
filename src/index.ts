@@ -21,6 +21,7 @@ const spies: Set<MockProp> = new Set();
 const spiedOn: Map<object, Set<string>> = new Map();
 
 class MockProp implements MockProp {
+    private initialPropDescriptor: PropertyDescriptor;
     private initialPropValue: any;
     private object: AnyObject;
     private propName: string;
@@ -28,17 +29,12 @@ class MockProp implements MockProp {
     private propValues: any[] = [];
 
     constructor({ object, propName }: { object: AnyObject; propName: string }) {
-        this.validate({ object, propName });
+        this.initialPropDescriptor = this.validate({ object, propName });
         this.object = object;
         this.propName = propName;
         this.initialPropValue = object[propName];
         this.propValue = this.initialPropValue;
-        if (object) {
-            Object.defineProperty(object, propName, {
-                get: this.nextValue,
-                set: this.mockValue,
-            });
-        }
+        this.attach();
         this.register();
     }
 
@@ -51,16 +47,11 @@ class MockProp implements MockProp {
     }
 
     public mockRestore = (): void => {
-        if (this.object[this.propName]) {
-            try {
-                delete this.object[this.propName];
-            } catch (error) {
-                this.object[this.propName] = undefined;
-            }
-        }
-        if (this.initialPropValue !== undefined) {
-            this.object[this.propName] = this.initialPropValue;
-        }
+        Object.defineProperty(
+            this.object,
+            this.propName,
+            this.initialPropDescriptor,
+        );
         this.deregister();
     }
 
@@ -90,7 +81,7 @@ class MockProp implements MockProp {
     }: {
         object: AnyObject;
         propName: string;
-    }): void => {
+    }): PropertyDescriptor => {
         const acceptedTypes: Set<string> = new Set(["function", "object"]);
         if (object === null || !acceptedTypes.has(typeof object)) {
             throw new Error(messages.error.invalidSpy(object));
@@ -106,6 +97,17 @@ class MockProp implements MockProp {
         ) {
             throw new Error(messages.error.noMethodSpy(propName));
         }
+        return descriptor;
+    }
+
+    /**
+     * Attach spy to object property
+     */
+    private attach = () => {
+        Object.defineProperty(this.object, this.propName, {
+            get: this.nextValue,
+            set: this.mockValue,
+        });
     }
 
     /**
