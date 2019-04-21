@@ -49,11 +49,7 @@ class MockProp implements MockProp {
             try {
                 delete this.object[this.propName];
             } catch (error) {
-                if (error instanceof TypeError) {
-                    this.object[this.propName] = undefined;
-                } else {
-                    throw error;
-                }
+                this.object[this.propName] = undefined;
             }
         }
         if (this.initialPropValue !== undefined) {
