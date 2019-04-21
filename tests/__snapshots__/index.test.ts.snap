@@ -1,9 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`does not mock object getter 1`] = `"Can not spy on method. Please use \`jest.spyOn\`"`;
+exports[`does not mock object getter 1`] = `"Cannot spy on the property 'propZ' because it is a function. Please use \`jest.spyOn\`."`;
 
-exports[`does not mock object method 1`] = `"Can not spy on method. Please use \`jest.spyOn\`"`;
+exports[`does not mock object method 1`] = `"Cannot spy on the property 'fn1' because it is a function. Please use \`jest.spyOn\`."`;
 
-exports[`does not mock object setter 1`] = `"Can not spy on method. Please use \`jest.spyOn\`"`;
+exports[`does not mock object setter 1`] = `"Cannot spy on the property 'propY' because it is a function. Please use \`jest.spyOn\`."`;
 
-exports[`throws error on mockClear 1`] = `"Nothing to clear"`;
+exports[`does not mock object undefined property 1`] = `"Cannot spy on the property 'propUndefined' because it is not defined."`;
+
+exports[`throws error on mockClear 1`] = `"Cannot \`mockClear\` on property spy."`;
