@@ -35,6 +35,8 @@ it("mocks object undefined property", () => {
     const testObject: AnyObject = {};
     const spy = jest.spyOnProp(testObject, "propUndefined").mockValue(1);
     expect(testObject.propUndefined).toEqual(1);
+    testObject.propUndefined = 5;
+    expect(testObject.propUndefined).toEqual(5);
     expect(jest.isMockProp(testObject, "propUndefined")).toBe(true);
     spy.mockRestore();
     expect(testObject.propUndefined).toEqual(undefined);
@@ -44,6 +46,8 @@ it("mocks object null property", () => {
     const testObject: AnyObject = { propNull: null };
     const spy = jest.spyOnProp(testObject, "propNull").mockValue(2);
     expect(testObject.propNull).toEqual(2);
+    testObject.propNull = 10;
+    expect(testObject.propNull).toEqual(10);
     expect(jest.isMockProp(testObject, "propNull")).toBe(true);
     spy.mockRestore();
     expect(testObject.propNull).toEqual(null);
@@ -54,7 +58,7 @@ it("mocks object property value", () => {
     const mockValue = 99;
     const spy = jest.spyOnProp(testObject, "prop1");
     expect(testObject.prop1).toEqual("1");
-    spy.mockValue(mockValue);
+    testObject.prop1 = mockValue;
     expect(testObject.prop1).toEqual(mockValue);
     expect(testObject.prop1).toEqual(mockValue);
     expectIsMockProp(testObject, "prop1");
@@ -62,6 +66,7 @@ it("mocks object property value", () => {
         mockProps.messages.warn.noIsMockPropValue,
     );
     spy.mockRestore();
+    expect(testObject.prop1).toEqual("1");
 });
 
 it("mocks object property value once", () => {
@@ -73,6 +78,18 @@ it("mocks object property value once", () => {
     expect(testObject.prop2).toEqual(mockValue2);
     expect(testObject.prop2).toEqual(mockValue1);
     expect(testObject.prop2).toEqual(2);
+});
+
+it("mocks object property replaces once", () => {
+    const testObject = { ...mockObject };
+    const mockValue1 = 99;
+    const mockValue2 = 100;
+    const spy = jest.spyOnProp(testObject, "prop2").mockValueOnce(mockValue1);
+    spy.mockValueOnce(mockValue2);
+    expect(testObject.prop2).toEqual(mockValue2);
+    spy.mockValue(4);
+    expect(testObject.prop2).toEqual(4);
+    expect(testObject.prop2).toEqual(4);
 });
 
 it("resets mocked object property", () => {

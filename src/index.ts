@@ -29,16 +29,11 @@ class MockProp implements MockProp {
         this.propValue = this.initialPropValue;
         if (object) {
             Object.defineProperty(object, propName, {
-                configurable: true,
                 get: this.nextValue,
                 set: this.mockValue,
             });
         }
-        spies.add(this);
-        if (!spiedOn.has(object)) {
-            spiedOn.set(object, new Set());
-        }
-        spiedOn.get(object).add(propName);
+        this.register();
     }
 
     public mockClear = (): void => {
@@ -51,13 +46,20 @@ class MockProp implements MockProp {
 
     public mockRestore = (): void => {
         if (this.object[this.propName]) {
-            delete this.object[this.propName];
+            try {
+                delete this.object[this.propName];
+            } catch (error) {
+                if (error instanceof TypeError) {
+                    this.object[this.propName] = undefined;
+                } else {
+                    throw error;
+                }
+            }
         }
         if (this.initialPropValue !== undefined) {
             this.object[this.propName] = this.initialPropValue;
         }
-        spies.delete(this);
-        spiedOn.delete(this.object);
+        this.deregister();
     }
 
     /**
@@ -99,6 +101,25 @@ class MockProp implements MockProp {
     }
 
     /**
+     * Track spy
+     */
+    private register = (): void => {
+        spies.add(this);
+        if (!spiedOn.has(this.object)) {
+            spiedOn.set(this.object, new Set());
+        }
+        spiedOn.get(this.object).add(this.propName);
+    }
+
+    /**
+     * Stop tracking spy
+     */
+    private deregister = (): void => {
+        spies.delete(this);
+        spiedOn.delete(this.object);
+    }
+
+    /**
      * Pop the value stack and return the next, defaulting to the mocked value
      */
     private nextValue = (): any => {
@@ -109,9 +130,8 @@ class MockProp implements MockProp {
 
 const isMockProp = (object: any, propName?: string): boolean => {
     if (propName) {
-        return Boolean(
-            spiedOn.get(object) && spiedOn.get(object).has(propName),
-        );
+        const spiedOnProps = spiedOn.get(object);
+        return Boolean(spiedOnProps && spiedOnProps.has(propName));
     }
     log.warn(messages.warn.noIsMockPropValue);
     return Boolean(object && object.mock instanceof MockProp);
