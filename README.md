@@ -68,7 +68,7 @@ Creates a mock property attached to `object[propertyName]` and returns a mock pr
 
 ## Example
 
-### file.js
+### video.js
 
 ```js
 const video = {
@@ -78,7 +78,7 @@ const video = {
 module.exports = video;
 ```
 
-### file.test.js
+### video.test.js
 
 ```js
 import * as mockProps from "jest-mock-props";
