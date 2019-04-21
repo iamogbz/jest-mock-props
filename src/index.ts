@@ -1,8 +1,14 @@
 export const messages = {
     error: {
+        invalidSpy: (o: any) => {
+            const helpfulValue = `${o ? typeof o : ""}'${o}'`;
+            return `Cannot spyOn on a primitive value; ${helpfulValue} given.`;
+        },
         noMethodSpy: (p: string) =>
             `Cannot spy on the property '${p}' because it is a function. Please use \`jest.spyOn\`.`,
         noMockClear: "Cannot `mockClear` on property spy.",
+        noUnconfigurableSpy: (p: string) =>
+            `Cannot spy on the property '${p}' because it is not configurable`,
         noUndefinedSpy: (p: string) =>
             `Cannot spy on the property '${p}' because it is not defined.`,
     },
@@ -19,6 +25,7 @@ const spies: Set<MockProp> = new Set();
 const spiedOn: Map<object, Set<string>> = new Map();
 
 class MockProp implements MockProp {
+    private initialPropDescriptor: PropertyDescriptor;
     private initialPropValue: any;
     private object: AnyObject;
     private propName: string;
@@ -26,17 +33,12 @@ class MockProp implements MockProp {
     private propValues: any[] = [];
 
     constructor({ object, propName }: { object: AnyObject; propName: string }) {
-        this.validate({ object, propName });
+        this.initialPropDescriptor = this.validate({ object, propName });
         this.object = object;
         this.propName = propName;
         this.initialPropValue = object[propName];
         this.propValue = this.initialPropValue;
-        if (object) {
-            Object.defineProperty(object, propName, {
-                get: this.nextValue,
-                set: this.mockValue,
-            });
-        }
+        this.attach();
         this.register();
     }
 
@@ -49,16 +51,11 @@ class MockProp implements MockProp {
     }
 
     public mockRestore = (): void => {
-        if (this.object[this.propName]) {
-            try {
-                delete this.object[this.propName];
-            } catch (error) {
-                this.object[this.propName] = undefined;
-            }
-        }
-        if (this.initialPropValue !== undefined) {
-            this.object[this.propName] = this.initialPropValue;
-        }
+        Object.defineProperty(
+            this.object,
+            this.propName,
+            this.initialPropDescriptor,
+        );
         this.deregister();
     }
 
@@ -88,10 +85,17 @@ class MockProp implements MockProp {
     }: {
         object: AnyObject;
         propName: string;
-    }): void => {
+    }): PropertyDescriptor => {
+        const acceptedTypes: Set<string> = new Set(["function", "object"]);
+        if (object === null || !acceptedTypes.has(typeof object)) {
+            throw new Error(messages.error.invalidSpy(object));
+        }
         const descriptor = Object.getOwnPropertyDescriptor(object, propName);
         if (!descriptor) {
             throw new Error(messages.error.noUndefinedSpy(propName));
+        }
+        if (!descriptor.configurable) {
+            throw new Error(messages.error.noUnconfigurableSpy(propName));
         }
         if (
             descriptor.set ||
@@ -100,6 +104,17 @@ class MockProp implements MockProp {
         ) {
             throw new Error(messages.error.noMethodSpy(propName));
         }
+        return descriptor;
+    }
+
+    /**
+     * Attach spy to object property
+     */
+    private attach = () => {
+        Object.defineProperty(this.object, this.propName, {
+            get: this.nextValue,
+            set: this.mockValue,
+        });
     }
 
     /**

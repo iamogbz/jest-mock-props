@@ -148,6 +148,23 @@ it("restores mocked object property in jest.restoreAllMocks", () => {
     spyOnConsoleWarn();
 });
 
+it.each([undefined, null, 99, "value", true].map(v => [v && typeof v, v]))(
+    "does not mock '%s' primitive",
+    (_, v: any) => {
+        expect(() =>
+            jest.spyOnProp(v, "propName"),
+        ).toThrowErrorMatchingSnapshot();
+    },
+);
+
+it("does not mock object non-configurable property", () => {
+    const testObject = {};
+    Object.defineProperty(testObject, "propUnconfigurable", { value: 2 });
+    expect(() =>
+        jest.spyOnProp(testObject, "propUnconfigurable"),
+    ).toThrowErrorMatchingSnapshot();
+});
+
 it("does not mock object undefined property", () => {
     expect(() =>
         jest.spyOnProp(mockObject, "propUndefined"),
@@ -156,7 +173,7 @@ it("does not mock object undefined property", () => {
     expect(mockObject.propUndefined).toBeUndefined();
 });
 
-it("does not mock object method", () => {
+it("does not mock object method property", () => {
     expect(() =>
         jest.spyOnProp(mockObject, "fn1"),
     ).toThrowErrorMatchingSnapshot();
@@ -164,7 +181,7 @@ it("does not mock object method", () => {
     expect(mockObject.fn1()).toEqual("fnReturnValue");
 });
 
-it("does not mock object getter", () => {
+it("does not mock object getter property", () => {
     expect(() =>
         jest.spyOnProp(mockObject, "propZ"),
     ).toThrowErrorMatchingSnapshot();
@@ -172,7 +189,7 @@ it("does not mock object getter", () => {
     expect(mockObject.propZ).toEqual("z");
 });
 
-it("does not mock object setter", () => {
+it("does not mock object setter property", () => {
     const testObject = {
         _value: 2,
         set propY(v: number) {
