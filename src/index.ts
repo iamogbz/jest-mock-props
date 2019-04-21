@@ -1,8 +1,18 @@
-const messages = {
+export const messages = {
     error: {
         noMethodSpy: "Can not spy on method. Please use `jest.spyOn`",
     },
+    warn: {
+        noIsMockPropValue: `Checking \`isMockProp\` using value is deprecated.
+Please use \`jest.isMockProp(object, propName)\``,
+    },
 };
+
+export const log = (...args: any[]) => log.default(...args);
+log.default = log.warn = (...args: any[]) => console.warn(...args); // tslint:disable-line
+
+const spies: Set<MockProp> = new Set();
+const spiedOn: Map<object, Set<string>> = new Map();
 
 class MockProp implements MockProp {
     private initialPropValue: any;
@@ -18,10 +28,12 @@ class MockProp implements MockProp {
         this.initialPropValue = object[propName];
         this.propValue = this.initialPropValue;
         if (object) {
-            const get = () => this.value;
-            const set = (v: any) => this.mockValue(v);
-            Object.defineProperty(object, propName, { get, set });
+            Object.defineProperty(object, propName, {
+                get: this.nextValue,
+                set: this.mockValue,
+            });
         }
+        this.register();
     }
 
     public mockClear = (): void => {
@@ -34,24 +46,38 @@ class MockProp implements MockProp {
 
     public mockRestore = (): void => {
         if (this.object[this.propName]) {
-            delete this.object[this.propName];
+            try {
+                delete this.object[this.propName];
+            } catch (error) {
+                this.object[this.propName] = undefined;
+            }
         }
         if (this.initialPropValue !== undefined) {
             this.object[this.propName] = this.initialPropValue;
         }
+        this.deregister();
     }
 
-    public mockValue = (v: any): MockProp => {
+    /**
+     * Set the value of the mocked property
+     */
+    public mockValue = (value: any): MockProp => {
         this.propValues = [];
-        this.propValue = v;
+        this.propValue = value;
         return this;
     }
 
-    public mockValueOnce = (v: any): MockProp => {
-        this.propValues.push(v);
+    /**
+     * Next value returned when the property is accessed
+     */
+    public mockValueOnce = (value: any): MockProp => {
+        this.propValues.push(value);
         return this;
     }
 
+    /**
+     * Determine if the object property can and should be mocked
+     */
     private validate = ({
         object,
         propName,
@@ -70,31 +96,56 @@ class MockProp implements MockProp {
         }
     }
 
-    get value(): any {
+    /**
+     * Track spy
+     */
+    private register = (): void => {
+        spies.add(this);
+        if (!spiedOn.has(this.object)) {
+            spiedOn.set(this.object, new Set());
+        }
+        spiedOn.get(this.object).add(this.propName);
+    }
+
+    /**
+     * Stop tracking spy
+     */
+    private deregister = (): void => {
+        spies.delete(this);
+        spiedOn.delete(this.object);
+    }
+
+    /**
+     * Pop the value stack and return the next, defaulting to the mocked value
+     */
+    private nextValue = (): any => {
         const propValue = this.propValues.pop() || this.propValue;
         return propValue && Object.assign(propValue, { mock: this });
     }
 }
 
-const spies: Set<MockProp> = new Set();
+const isMockProp = (object: any, propName?: string): boolean => {
+    if (propName) {
+        const spiedOnProps = spiedOn.get(object);
+        return Boolean(spiedOnProps && spiedOnProps.has(propName));
+    }
+    log.warn(messages.warn.noIsMockPropValue);
+    return Boolean(object && object.mock instanceof MockProp);
+};
+
+const resetAll = (): void => spies.forEach(spy => spy.mockReset());
+const restoreAll = (): void => spies.forEach(spy => spy.mockRestore());
+
+const spyOnProp = (object: AnyObject, propName: string): MockProp =>
+    new MockProp({ object, propName });
+
 export const extend = (jestInstance: typeof jest) => {
     const resetAllMocks = jestInstance.resetAllMocks;
     const restoreAllMocks = jestInstance.restoreAllMocks;
     Object.assign(jestInstance, {
-        isMockProp: (object: any): boolean =>
-            object && object.mock instanceof MockProp,
-        resetAllMocks: (): void => {
-            resetAllMocks();
-            spies.forEach(spy => spy.mockReset());
-        },
-        restoreAllMocks: (): void => {
-            restoreAllMocks();
-            spies.forEach(spy => spy.mockRestore());
-        },
-        spyOnProp: (object: AnyObject, propName: string): MockProp => {
-            const spy = new MockProp({ object, propName });
-            spies.add(spy);
-            return spy;
-        },
+        isMockProp,
+        resetAllMocks: (): void => resetAllMocks() && resetAll(),
+        restoreAllMocks: (): void => restoreAllMocks() && restoreAll(),
+        spyOnProp,
     });
 };

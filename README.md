@@ -46,9 +46,9 @@ This is useful when you want to mock properties in certain test cases and restor
 
 The jest object needs to be extended in every test file. This allows mocked properties to be reset and restored with [`jest.resetAllMocks`](https://jestjs.io/docs/en/jest-object#jestresetallmocks) and [`jest.restoreAllMocks`](https://jestjs.io/docs/en/jest-object#jestrestoreallmocks) respectively.
 
-#### `jest.isMockProp(prop)`
+#### `jest.isMockProp(object, propertyName)`
 
-Determines if the given object is a mocked property.
+Determines if the given object property has been mocked.
 
 #### `jest.spyOnProp(object, propertyName)`
 
