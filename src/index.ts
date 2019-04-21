@@ -3,8 +3,8 @@ export const messages = {
         noMethodSpy: (p: string) =>
             `Cannot spy on the property '${p}' because it is a function. Please use \`jest.spyOn\`.`,
         noMockClear: "Cannot `mockClear` on property spy.",
-        noUndefinedSpy: (prop: string) =>
-            `Cannot spy on the property '${prop}' because it is not defined.`,
+        noUndefinedSpy: (p: string) =>
+            `Cannot spy on the property '${p}' because it is not defined.`,
     },
     warn: {
         noIsMockPropValue: `Checking \`isMockProp\` using value is deprecated.
