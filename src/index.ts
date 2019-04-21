@@ -1,7 +1,9 @@
 export const messages = {
     error: {
-        invalidSpy: (o: any) =>
-            `Cannot spyOn on a primitive value; '${o}' given.`,
+        invalidSpy: (o: any) => {
+            const helpfulValue = `${o ? typeof o : ""}'${o}'`;
+            return `Cannot spyOn on a primitive value; ${helpfulValue} given.`;
+        },
         noMethodSpy: (p: string) =>
             `Cannot spy on the property '${p}' because it is a function. Please use \`jest.spyOn\`.`,
         noMockClear: "Cannot `mockClear` on property spy.",

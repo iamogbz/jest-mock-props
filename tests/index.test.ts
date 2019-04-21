@@ -158,10 +158,10 @@ it.each([undefined, null, 99, "value", true].map(v => [v && typeof v, v]))(
 );
 
 it("does not mock object non-configurable property", () => {
-    const testObject: AnyObject = {};
+    const testObject = {};
     Object.defineProperty(testObject, "propUnconfigurable", { value: 2 });
     expect(() =>
-        jest.spyOnProp(mockObject, "propUnconfigurable"),
+        jest.spyOnProp(testObject, "propUnconfigurable"),
     ).toThrowErrorMatchingSnapshot();
 });
 
