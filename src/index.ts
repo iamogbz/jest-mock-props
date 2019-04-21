@@ -5,6 +5,8 @@ export const messages = {
         noMethodSpy: (p: string) =>
             `Cannot spy on the property '${p}' because it is a function. Please use \`jest.spyOn\`.`,
         noMockClear: "Cannot `mockClear` on property spy.",
+        noUnconfigurableSpy: (p: string) =>
+            `Cannot spy on the property '${p}' because it is not configurable`,
         noUndefinedSpy: (p: string) =>
             `Cannot spy on the property '${p}' because it is not defined.`,
     },
@@ -89,6 +91,9 @@ class MockProp implements MockProp {
         const descriptor = Object.getOwnPropertyDescriptor(object, propName);
         if (!descriptor) {
             throw new Error(messages.error.noUndefinedSpy(propName));
+        }
+        if (!descriptor.configurable) {
+            throw new Error(messages.error.noUnconfigurableSpy(propName));
         }
         if (
             descriptor.set ||

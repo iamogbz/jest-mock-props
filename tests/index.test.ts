@@ -152,10 +152,18 @@ it.each([undefined, null, 99, "value", true].map(v => [v && typeof v, v]))(
     "does not mock '%s' primitive",
     (_, v: any) => {
         expect(() =>
-            jest.spyOnProp(v, "propUndefined"),
+            jest.spyOnProp(v, "propName"),
         ).toThrowErrorMatchingSnapshot();
     },
 );
+
+it("does not mock object non-configurable property", () => {
+    const testObject: AnyObject = {};
+    Object.defineProperty(testObject, "propUnconfigurable", { value: 2 });
+    expect(() =>
+        jest.spyOnProp(mockObject, "propUnconfigurable"),
+    ).toThrowErrorMatchingSnapshot();
+});
 
 it("does not mock object undefined property", () => {
     expect(() =>
