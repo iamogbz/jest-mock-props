@@ -12,7 +12,7 @@ declare interface MockProp {
 
 // tslint:disable-next-line no-namespace
 declare namespace jest {
-    const isMockProp: (object: any) => boolean;
+    const isMockProp: (object: any, propName?: string) => boolean;
     const spyOnProp: (object: AnyObject, propName: string) => MockProp;
 }
 
