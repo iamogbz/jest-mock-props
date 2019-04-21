@@ -1,5 +1,7 @@
 export const messages = {
     error: {
+        invalidSpy: (o: any) =>
+            `Cannot spyOn on a primitive value; '${o}' given.`,
         noMethodSpy: (p: string) =>
             `Cannot spy on the property '${p}' because it is a function. Please use \`jest.spyOn\`.`,
         noMockClear: "Cannot `mockClear` on property spy.",
@@ -89,6 +91,10 @@ class MockProp implements MockProp {
         object: AnyObject;
         propName: string;
     }): void => {
+        const acceptedTypes: Set<string> = new Set(["function", "object"]);
+        if (object === null || !acceptedTypes.has(typeof object)) {
+            throw new Error(messages.error.invalidSpy(object));
+        }
         const descriptor = Object.getOwnPropertyDescriptor(object, propName);
         if (!descriptor) {
             throw new Error(messages.error.noUndefinedSpy(propName));

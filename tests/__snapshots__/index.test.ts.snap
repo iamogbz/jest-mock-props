@@ -1,5 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`does not mock 'boolean' primitive 1`] = `"Cannot spyOn on a primitive value; 'true' given."`;
+
+exports[`does not mock 'null' primitive 1`] = `"Cannot spyOn on a primitive value; 'null' given."`;
+
+exports[`does not mock 'number' primitive 1`] = `"Cannot spyOn on a primitive value; '99' given."`;
+
+exports[`does not mock 'string' primitive 1`] = `"Cannot spyOn on a primitive value; 'value' given."`;
+
+exports[`does not mock 'undefined' primitive 1`] = `"Cannot spyOn on a primitive value; 'undefined' given."`;
+
 exports[`does not mock object getter 1`] = `"Cannot spy on the property 'propZ' because it is a function. Please use \`jest.spyOn\`."`;
 
 exports[`does not mock object method 1`] = `"Cannot spy on the property 'fn1' because it is a function. Please use \`jest.spyOn\`."`;

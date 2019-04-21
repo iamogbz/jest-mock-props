@@ -148,6 +148,15 @@ it("restores mocked object property in jest.restoreAllMocks", () => {
     spyOnConsoleWarn();
 });
 
+it.each([undefined, null, 99, "value", true].map(v => [v && typeof v, v]))(
+    "does not mock '%s' primitive",
+    (_, v: any) => {
+        expect(() =>
+            jest.spyOnProp(v, "propUndefined"),
+        ).toThrowErrorMatchingSnapshot();
+    },
+);
+
 it("does not mock object undefined property", () => {
     expect(() =>
         jest.spyOnProp(mockObject, "propUndefined"),
