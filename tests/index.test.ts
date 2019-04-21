@@ -9,7 +9,16 @@ const mockObject: AnyObject = {
     },
 };
 
-beforeAll(() => mockProps.extend(jest));
+const spyConsoleWarn = jest.fn();
+const spyOnConsoleWarn = () =>
+    jest.spyOn(console, "warn").mockImplementation(spyConsoleWarn);
+
+beforeEach(jest.clearAllMocks);
+beforeAll(() => {
+    mockProps.extend(jest);
+    spyOnConsoleWarn();
+});
+afterAll(jest.restoreAllMocks);
 
 const expectIsMockProp = (
     object: AnyObject,
@@ -49,6 +58,9 @@ it("mocks object property value", () => {
     expect(testObject.prop1).toEqual(mockValue);
     expect(testObject.prop1).toEqual(mockValue);
     expectIsMockProp(testObject, "prop1");
+    expect(spyConsoleWarn).toHaveBeenCalledWith(
+        mockProps.messages.warn.noIsMockPropValue,
+    );
     spy.mockRestore();
 });
 
@@ -98,6 +110,7 @@ it("resets mocked object property in jest.resetAllMocks", () => {
     expect(testObject.prop1).toEqual("1");
     expect(testObject.prop2).toEqual(2);
     expectIsMockProp(testObject, "prop2");
+    spyOnConsoleWarn();
 });
 
 it("restores mocked object property in jest.restoreAllMocks", () => {
@@ -115,6 +128,7 @@ it("restores mocked object property in jest.restoreAllMocks", () => {
     expect(testObject.prop2).toEqual(2);
     expectIsNotMockProp(testObject, "prop1");
     expectIsNotMockProp(testObject, "prop2");
+    spyOnConsoleWarn();
 });
 
 it("does not mock object method", () => {

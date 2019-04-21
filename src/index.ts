@@ -1,8 +1,15 @@
-const messages = {
+export const messages = {
     error: {
         noMethodSpy: "Can not spy on method. Please use `jest.spyOn`",
     },
+    warn: {
+        noIsMockPropValue: `Checking \`isMockProp\` using value is deprecated.
+Please use \`jest.isMockProp(object, propName)\``,
+    },
 };
+
+export const log = (...args: any[]) => log.default(...args);
+log.default = log.warn = (...args: any[]) => console.warn(...args); // tslint:disable-line
 
 const spies: Set<MockProp> = new Set();
 const spiedOn: Map<object, Set<string>> = new Map();
@@ -100,12 +107,15 @@ class MockProp implements MockProp {
     }
 }
 
-const isMockProp = (object: any, propName?: string): boolean =>
-    Boolean(
-        propName
-            ? spiedOn.get(object) && spiedOn.get(object).has(propName)
-            : object && object.mock instanceof MockProp,
-    );
+const isMockProp = (object: any, propName?: string): boolean => {
+    if (propName) {
+        return Boolean(
+            spiedOn.get(object) && spiedOn.get(object).has(propName),
+        );
+    }
+    log.warn(messages.warn.noIsMockPropValue);
+    return Boolean(object && object.mock instanceof MockProp);
+};
 
 const resetAll = (): void => spies.forEach(spy => spy.mockReset());
 const restoreAll = (): void => spies.forEach(spy => spy.mockRestore());
