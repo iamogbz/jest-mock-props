@@ -83,16 +83,15 @@ it("mocks video length", () => {
         .mockValueOnce(600);
     expect(video.length).toEqual(600);
     expect(video.length).toEqual(400);
-
-    video.length = 512;
-    expect(video.length).toEqual(1000);
-    expect(video.length.mock).toEqual(spy);
+    
+    video.length = 800;
+    expect(video.length).toEqual(800);
 
     spy.mockReset();
     expect(video.length).toEqual(1000);
-    expect(jest.isMockProp(video.length)).toBe(true);
+    expect(jest.isMockProp(video, "length")).toBe(true);
 
     spy.mockRestore();
-    expect(jest.isMockProp(video.length)).toBe(false);
+    expect(jest.isMockProp(video, "length")).toBe(false);
 });
 ```
