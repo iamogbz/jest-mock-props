@@ -18,6 +18,4 @@ exports[`does not mock object non-configurable property 1`] = `"Cannot spy on th
 
 exports[`does not mock object setter property 1`] = `"Cannot spy on the property 'propY' because it is a function. Please use \`jest.spyOn\`."`;
 
-exports[`does not mock object undefined property 1`] = `"Cannot spy on the property 'propUndefined' because it is not defined."`;
-
 exports[`throws error on mockClear 1`] = `"Cannot \`mockClear\` on property spy."`;

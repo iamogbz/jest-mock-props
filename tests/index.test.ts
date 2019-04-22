@@ -31,6 +31,17 @@ const expectIsMockProp = (
 const expectIsNotMockProp = (object: AnyObject, propName: string) =>
     expectIsMockProp(object, propName, false);
 
+it("mock object undefined property", () => {
+    const testObject: AnyObject = {};
+    const spy = jest.spyOnProp(testObject, "propUndefined").mockValue(1);
+    expect(testObject.propUndefined).toEqual(1);
+    testObject.propUndefined = 5;
+    expect(testObject.propUndefined).toEqual(5);
+    expect(jest.isMockProp(testObject, "propUndefined")).toBe(true);
+    spy.mockRestore();
+    expect(testObject.propUndefined).toEqual(undefined);
+});
+
 it("mocks object property value undefined", () => {
     const testObject: AnyObject = { propUndefined: undefined };
     const spy = jest.spyOnProp(testObject, "propUndefined").mockValue(1);
@@ -163,14 +174,6 @@ it("does not mock object non-configurable property", () => {
     expect(() =>
         jest.spyOnProp(testObject, "propUnconfigurable"),
     ).toThrowErrorMatchingSnapshot();
-});
-
-it("does not mock object undefined property", () => {
-    expect(() =>
-        jest.spyOnProp(mockObject, "propUndefined"),
-    ).toThrowErrorMatchingSnapshot();
-    expectIsNotMockProp(mockObject, "propUndefined");
-    expect(mockObject.propUndefined).toBeUndefined();
 });
 
 it("does not mock object method property", () => {
