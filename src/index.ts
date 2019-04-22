@@ -51,11 +51,15 @@ class MockProp implements MockProp {
     }
 
     public mockRestore = (): void => {
-        Object.defineProperty(
-            this.object,
-            this.propName,
-            this.initialPropDescriptor,
-        );
+        if (this.initialPropDescriptor) {
+            Object.defineProperty(
+                this.object,
+                this.propName,
+                this.initialPropDescriptor,
+            );
+        } else {
+            delete this.object[this.propName];
+        }
         this.deregister();
     }
 
@@ -92,7 +96,7 @@ class MockProp implements MockProp {
         }
         const descriptor = Object.getOwnPropertyDescriptor(object, propName);
         if (!descriptor) {
-            throw new Error(messages.error.noUndefinedSpy(propName));
+            return descriptor;
         }
         if (!descriptor.configurable) {
             throw new Error(messages.error.noUnconfigurableSpy(propName));
@@ -112,6 +116,7 @@ class MockProp implements MockProp {
      */
     private attach = () => {
         Object.defineProperty(this.object, this.propName, {
+            configurable: true,
             get: this.nextValue,
             set: this.mockValue,
         });
