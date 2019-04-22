@@ -70,8 +70,8 @@ it("mocks object property value once", () => {
     const mockValue2 = 100;
     const spy = jest.spyOnProp(testObject, "prop2").mockValueOnce(mockValue1);
     spy.mockValueOnce(mockValue2);
-    expect(testObject.prop2).toEqual(mockValue2);
     expect(testObject.prop2).toEqual(mockValue1);
+    expect(testObject.prop2).toEqual(mockValue2);
     expect(testObject.prop2).toEqual(2);
 });
 
@@ -80,7 +80,8 @@ it("mocks object property replaces once", () => {
     const mockValue1 = 99;
     const mockValue2 = 100;
     const spy = jest.spyOnProp(testObject, "prop2").mockValueOnce(mockValue1);
-    spy.mockValueOnce(mockValue2);
+    spy.mockValueOnce(mockValue2).mockValueOnce(101);
+    expect(testObject.prop2).toEqual(mockValue1);
     expect(testObject.prop2).toEqual(mockValue2);
     spy.mockValue(4);
     expect(testObject.prop2).toEqual(4);

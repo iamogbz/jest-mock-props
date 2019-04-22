@@ -141,9 +141,9 @@ class MockProp implements MockProp {
     }
 
     /**
-     * Pop the value stack and return the next, defaulting to the mocked value
+     * Shift and return the first next, defaulting to the mocked value
      */
-    private nextValue = (): any => this.propValues.pop() || this.propValue;
+    private nextValue = (): any => this.propValues.shift() || this.propValue;
 }
 
 const isMockProp = (object: any, propName: string): boolean => {
