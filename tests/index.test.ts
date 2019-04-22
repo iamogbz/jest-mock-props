@@ -9,29 +9,24 @@ const mockObject: AnyObject = {
     },
 };
 
-const spyConsoleWarn = jest.fn();
-const spyOnConsoleWarn = () =>
-    jest.spyOn(console, "warn").mockImplementation(spyConsoleWarn);
+const spyConsoleWarn = jest.spyOn(console, "warn");
 
 beforeEach(jest.clearAllMocks);
-beforeAll(() => {
-    mockProps.extend(jest);
-    spyOnConsoleWarn();
-});
+beforeAll(() => mockProps.extend(jest));
 afterAll(jest.restoreAllMocks);
 
 it("mock object undefined property", () => {
     const testObject: AnyObject = {};
-    const spy = jest.spyOnProp(testObject, "propUndefined").mockValue(1);
+    const spy = jest.spyOnProp(testObject, "undefinedProp").mockValue(1);
     expect(spyConsoleWarn).toHaveBeenCalledWith(
-        mockProps.messages.warn.noUndefinedSpy,
+        mockProps.messages.warn.noUndefinedSpy("undefinedProp"),
     );
-    expect(testObject.propUndefined).toEqual(1);
-    testObject.propUndefined = 5;
-    expect(testObject.propUndefined).toEqual(5);
-    expect(jest.isMockProp(testObject, "propUndefined")).toBe(true);
+    expect(testObject.undefinedProp).toEqual(1);
+    testObject.undefinedProp = 5;
+    expect(testObject.undefinedProp).toEqual(5);
+    expect(jest.isMockProp(testObject, "undefinedProp")).toBe(true);
     spy.mockRestore();
-    expect(testObject.propUndefined).toEqual(undefined);
+    expect(testObject.undefinedProp).toEqual(undefined);
 });
 
 it("mocks object property value undefined", () => {
@@ -127,7 +122,6 @@ it("resets mocked object property in jest.resetAllMocks", () => {
     expect(testObject.prop1).toEqual("1");
     expect(testObject.prop2).toEqual(2);
     expect(jest.isMockProp(testObject, "prop2")).toBe(true);
-    spyOnConsoleWarn();
 });
 
 it("restores mocked object property in jest.restoreAllMocks", () => {
@@ -145,7 +139,6 @@ it("restores mocked object property in jest.restoreAllMocks", () => {
     expect(testObject.prop2).toEqual(2);
     expect(jest.isMockProp(testObject, "prop1")).toBe(false);
     expect(jest.isMockProp(testObject, "prop2")).toBe(false);
-    spyOnConsoleWarn();
 });
 
 it.each([undefined, null, 99, "value", true].map(v => [v && typeof v, v]))(

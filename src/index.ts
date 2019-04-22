@@ -94,7 +94,7 @@ class MockProp implements MockProp {
         }
         const descriptor = Object.getOwnPropertyDescriptor(object, propName);
         if (!descriptor) {
-            log.warn(messages.warn.noUndefinedSpy);
+            log.warn(messages.warn.noUndefinedSpy(propName));
             return descriptor;
         }
         if (!descriptor.configurable) {
