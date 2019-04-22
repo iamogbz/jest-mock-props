@@ -20,9 +20,9 @@ npm install -D 'jest-mock-props'
 
 ## API Reference
 
-### Mock Property Spy
+### Mock Properties
 
-Mock properties have "spies" that let you control the behavior of a property that is accessed indirectly by some other code.
+Mock properties are "spies" that let you control the behavior of a property that is accessed indirectly by some other code.
 
 These are the methods available on every mocked property spy object.
 
@@ -41,16 +41,6 @@ This is useful when you want to completely reset a property back to its initial 
 Restores the original (non-mocked) value.
 
 This is useful when you want to mock properties in certain test cases and restore the original value in others.
-
-### Mock Property Value
-
-Accessing a mocked property gives the current value as well as a reference to the spy that controls it.
-
-#### `.mock`
-
-All mocked property values have a `mock` property that references the spy.
-
-**Note**: This does not apply to `undefined` and `null` values.
 
 ### The Jest Object
 
