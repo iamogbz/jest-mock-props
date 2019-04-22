@@ -28,7 +28,7 @@ These are the methods available on every mocked property spy object.
 
 #### `spy.mockClear()`
 
-**This throws an error**. Only implemented to differentiate behaviour from [`spy.mockReset()`](#spypmockreset). This does not change the mocked value, therefore is unaffected by `jest.clearAllMocks`.
+**This throws an error**. Only implemented to differentiate behaviour from [`spy.mockReset()`](#spymockreset). This does not change the mocked value, therefore is unaffected by `jest.clearAllMocks`.
 
 #### `spy.mockReset()`
 
