@@ -9,12 +9,10 @@ export const messages = {
         noMockClear: "Cannot `mockClear` on property spy.",
         noUnconfigurableSpy: (p: string) =>
             `Cannot spy on the property '${p}' because it is not configurable`,
-        noUndefinedSpy: (p: string) =>
-            `Cannot spy on the property '${p}' because it is not defined.`,
     },
     warn: {
-        noIsMockPropValue: `Checking \`isMockProp\` using value is deprecated.
-Please use \`jest.isMockProp(object, propName)\``,
+        noUndefinedSpy: (p: string) =>
+            `Spying on an undefined property '${p}'.`,
     },
 };
 
@@ -96,6 +94,7 @@ class MockProp implements MockProp {
         }
         const descriptor = Object.getOwnPropertyDescriptor(object, propName);
         if (!descriptor) {
+            log.warn(messages.warn.noUndefinedSpy);
             return descriptor;
         }
         if (!descriptor.configurable) {
@@ -144,19 +143,12 @@ class MockProp implements MockProp {
     /**
      * Pop the value stack and return the next, defaulting to the mocked value
      */
-    private nextValue = (): any => {
-        const propValue = this.propValues.pop() || this.propValue;
-        return propValue && Object.assign(propValue, { mock: this });
-    }
+    private nextValue = (): any => this.propValues.pop() || this.propValue;
 }
 
-const isMockProp = (object: any, propName?: string): boolean => {
-    if (propName) {
-        const spiedOnProps = spiedOn.get(object);
-        return Boolean(spiedOnProps && spiedOnProps.has(propName));
-    }
-    log.warn(messages.warn.noIsMockPropValue);
-    return Boolean(object && object.mock instanceof MockProp);
+const isMockProp = (object: any, propName: string): boolean => {
+    const spiedOnProps = spiedOn.get(object);
+    return Boolean(spiedOnProps && spiedOnProps.has(propName));
 };
 
 const resetAll = (): void => spies.forEach(spy => spy.mockReset());
