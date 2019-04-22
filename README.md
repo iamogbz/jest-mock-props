@@ -26,21 +26,33 @@ Mock properties are "spies" that let you control the behavior of a property that
 
 These are the methods available on every mocked property spy object.
 
-#### `mockProp.mockClear()`
+#### `spy.mockClear()`
 
-**This throws an error**. Only implemented to differentiate behaviour from [`mockProp.mockReset()`](#mockpropmockreset). This does not change the mocked value, therefore is unaffected by `jest.clearAllMocks`.
+**This throws an error**. Only implemented to differentiate behaviour from [`spy.mockReset()`](#spypmockreset). This does not change the mocked value, therefore is unaffected by `jest.clearAllMocks`.
 
-#### `mockProp.mockReset()`
+#### `spy.mockReset()`
 
 Removes any mocked values.
 
 This is useful when you want to completely reset a property back to its initial value.
 
-#### `mockProp.mockRestore()`
+#### `spy.mockRestore()`
 
 Restores the original (non-mocked) value.
 
 This is useful when you want to mock properties in certain test cases and restore the original value in others.
+
+#### `spy.mockValue(value)`
+
+Accepts a value that should be result of accessing the mocked property.
+
+**Note**: This is the same function used when setting the mocked property directly; e.g. `obj.mockedProp = 'newValue'`
+
+#### `spy.mockValueOnce(value)`
+
+Accepts a value that will be result of a single access to the mocked property. Can be chained so that multiple accesses produce different results. See [example](#videotestjs).
+
+**Note**: When the mocked property runs out of values defined with `mockValueOnce`, it will have the default value set with `obj.mockedProp = 'defaultValue'` or `spy.mockValue(defaultValue)`.
 
 ### The Jest Object
 
@@ -81,9 +93,9 @@ it("mocks video length", () => {
     spy.mockValueOnce(200)
         .mockValueOnce(400)
         .mockValueOnce(600);
-    expect(video.length).toEqual(600);
+    expect(video.length).toEqual(200);
     expect(video.length).toEqual(400);
-    
+
     video.length = 800;
     expect(video.length).toEqual(800);
 
