@@ -56,6 +56,10 @@ class MockProp implements MockProp {
                 this.initialPropDescriptor,
             );
         } else {
+            Object.defineProperty(this.object, this.propName, {
+                configurable: true,
+                value: undefined,
+            });
             delete this.object[this.propName];
         }
         this.deregister();

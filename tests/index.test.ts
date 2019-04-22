@@ -16,17 +16,16 @@ beforeAll(() => mockProps.extend(jest));
 afterAll(jest.restoreAllMocks);
 
 it("mock object undefined property", () => {
-    const testObject: AnyObject = {};
-    const spy = jest.spyOnProp(testObject, "undefinedProp").mockValue(1);
+    const spy = jest.spyOnProp(process.env, "undefinedProp").mockValue(1);
     expect(spyConsoleWarn).toHaveBeenCalledWith(
         mockProps.messages.warn.noUndefinedSpy("undefinedProp"),
     );
-    expect(testObject.undefinedProp).toEqual(1);
-    testObject.undefinedProp = 5;
-    expect(testObject.undefinedProp).toEqual(5);
-    expect(jest.isMockProp(testObject, "undefinedProp")).toBe(true);
+    expect(process.env.undefinedProp).toEqual(1);
+    process.env.undefinedProp = "5";
+    expect(process.env.undefinedProp).toEqual("5");
+    expect(jest.isMockProp(process.env, "undefinedProp")).toBe(true);
     spy.mockRestore();
-    expect(testObject.undefinedProp).toEqual(undefined);
+    expect(process.env.undefinedProp).toEqual(undefined);
 });
 
 it("mocks object property value undefined", () => {

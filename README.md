@@ -66,7 +66,7 @@ Determines if the given object property has been mocked.
 
 Creates a mock property attached to `object[propertyName]` and returns a mock property spy object, which controls all access to the object property.
 
-**Note**: By default, `spyOnProp` preserves the object property value. If you want to overwrite the original value, you can use `jest.spyOnProp(object, methodName).mockValue(customValue);` or [`jest.spyOn(object, methodName, accessType?)`](https://jestjs.io/docs/en/jest-object#jestspyonobject-methodname-accesstype) to spy on a getter or a setter.
+**Note**: By default, `spyOnProp` preserves the object property value. If you want to overwrite the original value, you can use `jest.spyOnProp(object, methodName).mockValue(customValue)` or [`jest.spyOn(object, methodName, accessType?)`](https://jestjs.io/docs/en/jest-object#jestspyonobject-methodname-accesstype) to spy on a getter or a setter.
 
 ## Example
 
