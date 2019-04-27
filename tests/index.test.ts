@@ -165,32 +165,3 @@ it("does not mock object method property", () => {
     expect(jest.isMockProp(mockObject, "fn1")).toBe(false);
     expect(mockObject.fn1()).toEqual("fnReturnValue");
 });
-
-it("does not mock object getter property", () => {
-    expect(() =>
-        jest.spyOnProp(mockObject, "propZ"),
-    ).toThrowErrorMatchingSnapshot();
-    expect(jest.isMockProp(mockObject, "propZ")).toBe(false);
-    expect(mockObject.propZ).toEqual("z");
-});
-
-it("does not mock object setter property", () => {
-    const testObject = {
-        _value: 2,
-        set propY(v: number) {
-            this._value = v; // tslint:disable-line
-        },
-    };
-    expect(() =>
-        jest.spyOnProp(testObject, "propY"),
-    ).toThrowErrorMatchingSnapshot();
-    testObject.propY = 4;
-    expect(testObject._value).toEqual(4);
-});
-
-it("throws error on mockClear", () => {
-    const testObject = { ...mockObject };
-    const spy = jest.spyOnProp(testObject, "prop1");
-    expect(jest.isMockProp(testObject, "prop1")).toBe(true);
-    expect(spy.mockClear).toThrowErrorMatchingSnapshot();
-});
