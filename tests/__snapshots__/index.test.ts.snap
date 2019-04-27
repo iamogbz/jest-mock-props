@@ -10,6 +10,8 @@ exports[`does not mock 'string' primitive 1`] = `"Cannot spyOn on a primitive va
 
 exports[`does not mock 'undefined' primitive 1`] = `"Cannot spyOn on a primitive value; 'undefined' given."`;
 
+exports[`does not mock object getter property 1`] = `"Cannot spy on the property 'propZ' because it is a function. Please use \`jest.spyOn\`."`;
+
 exports[`does not mock object method property 1`] = `"Cannot spy on the property 'fn1' because it is a function. Please use \`jest.spyOn\`."`;
 
 exports[`does not mock object non-configurable property 1`] = `"Cannot spy on the property 'propUnconfigurable' because it is not configurable"`;
