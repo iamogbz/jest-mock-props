@@ -140,8 +140,7 @@ class MockProp implements MockProp {
      * Stop tracking spy
      */
     private deregister = (): void => {
-        spies.delete(this);
-        spiedOn.delete(this.object);
+        spiedOn.get(this.object).delete(this.propName);
     }
 
     /**
