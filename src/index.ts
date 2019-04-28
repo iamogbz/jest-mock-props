@@ -19,8 +19,16 @@ export const messages = {
 export const log = (...args: any[]) => log.default(...args);
 log.default = log.warn = (...args: any[]) => console.warn(...args); // tslint:disable-line
 
-const spies: Set<MockProp> = new Set();
-const spiedOn: Map<object, Set<string>> = new Map();
+const spiedOn: Map<object, Map<string, MockProp>> = new Map();
+const getAllSpies = (): Set<MockProp> => {
+    const spies: Set<MockProp> = new Set();
+    for (const spiedProps of spiedOn.values()) {
+        for (const spy of spiedProps.values()) {
+            spies.add(spy);
+        }
+    }
+    return spies;
+};
 
 class MockProp implements MockProp {
     private initialPropDescriptor: PropertyDescriptor;
@@ -129,11 +137,10 @@ class MockProp implements MockProp {
      * Track spy
      */
     private register = (): void => {
-        spies.add(this);
         if (!spiedOn.has(this.object)) {
-            spiedOn.set(this.object, new Set());
+            spiedOn.set(this.object, new Map());
         }
-        spiedOn.get(this.object).add(this.propName);
+        spiedOn.get(this.object).set(this.propName, this);
     }
 
     /**
@@ -154,11 +161,15 @@ const isMockProp = (object: any, propName: string): boolean => {
     return Boolean(spiedOnProps && spiedOnProps.has(propName));
 };
 
-const resetAll = (): void => spies.forEach(spy => spy.mockReset());
-const restoreAll = (): void => spies.forEach(spy => spy.mockRestore());
+const resetAll = (): void => getAllSpies().forEach(spy => spy.mockReset());
+const restoreAll = (): void => getAllSpies().forEach(spy => spy.mockRestore());
 
-const spyOnProp = (object: AnyObject, propName: string): MockProp =>
-    new MockProp({ object, propName });
+const spyOnProp = (object: AnyObject, propName: string): MockProp => {
+    if (isMockProp(object, propName)) {
+        return spiedOn.get(object).get(propName);
+    }
+    return new MockProp({ object, propName });
+};
 
 export const extend = (jestInstance: typeof jest) => {
     const resetAllMocks = jestInstance.resetAllMocks;
