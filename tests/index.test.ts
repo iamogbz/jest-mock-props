@@ -154,6 +154,19 @@ it("restores mocked object property in jest.restoreAllMocks", () => {
     expect(jest.isMockProp(testObject, "prop2")).toBe(false);
 });
 
+it("does not remock object property", () => {
+    const testObject = { ...mockObject };
+    const mockValue = 99;
+    const spy1 = jest.spyOnProp(testObject, "prop1").mockValue(mockValue);
+    expect(testObject.prop1).toEqual(mockValue);
+    const spy2 = jest.spyOnProp(testObject, "prop1").mockValue(mockValue);
+    expect(spy2).toBe(spy1);
+    expect(jest.isMockProp(testObject, "prop1")).toBe(true);
+    spy2.mockRestore();
+    expect(testObject.prop1).toEqual("1");
+    expect(jest.isMockProp(testObject, "prop1")).toBe(false);
+});
+
 it.each([undefined, null, 99, "value", true].map(v => [v && typeof v, v]))(
     "does not mock '%s' primitive",
     (_, v: any) => {
