@@ -80,8 +80,6 @@
         "url": "git+https://github.com/iamogbz/jest-mock-props.git"
     },
     "keywords": [
-        "node",
-        "nodejs",
         "jest",
         "testing",
         "jest-mock",
