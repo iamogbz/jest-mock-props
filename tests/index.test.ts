@@ -91,10 +91,9 @@ it("mocks object multiple properties", () => {
     const testObject = { ...mockObject };
     const mockValue = 99;
     const spy = jest.spyOnProp(testObject, "prop1").mockValue(mockValue);
-    expect(testObject.prop1).toEqual(mockValue);
     jest.spyOnProp(testObject, "prop2").mockValue(mockValue);
-    expect(testObject.prop2).toEqual(mockValue);
     spy.mockRestore();
+    expect(jest.isMockProp(testObject, "prop1")).toBe(false);
     expect(jest.isMockProp(testObject, "prop2")).toBe(true);
     expect(testObject.prop1).toEqual("1");
     expect(testObject.prop2).toEqual(mockValue);
