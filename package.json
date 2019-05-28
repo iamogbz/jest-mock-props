@@ -75,9 +75,15 @@
             "pre-commit": "lint-staged"
         }
     },
+    "author": "iamogbz",
+    "license": "GPL-3.0",
+    "homepage": "https://github.com/iamogbz/jest-mock-props#readme",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/iamogbz/jest-mock-props.git"
+        "url": "https://github.com/iamogbz/jest-mock-props"
+    },
+    "bugs": {
+        "url": "https://github.com/iamogbz/jest-mock-props/issues"
     },
     "keywords": [
         "node",
@@ -90,12 +96,6 @@
         "package",
         "npm"
     ],
-    "author": "iamogbz",
-    "license": "GPL-3.0",
-    "bugs": {
-        "url": "https://github.com/iamogbz/jest-mock-props/issues"
-    },
-    "homepage": "https://github.com/iamogbz/jest-mock-props#readme",
     "engines": {
         "node": ">=8.0.0"
     },
@@ -128,7 +128,7 @@
         "lint-staged": "^8.1.4",
         "prettier": "^1.16.4",
         "rxjs": "^6.4.0",
-        "semantic-release": "^15.13.12",
+        "semantic-release": "^15.13.3",
         "ts-jest": "^24.0.0",
         "ts-node": "^8.0.2",
         "tslint": "^5.13.0",
