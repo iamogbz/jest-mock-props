@@ -122,7 +122,7 @@
         "jest": "^24.1.0",
         "lint-staged": "^9.0.0",
         "prettier": "^1.16.4",
-        "rxjs": "^6.4.0",
+        "rxjs": "^6.5.3",
         "semantic-release": "^15.13.3",
         "ts-jest": "^24.0.0",
         "ts-node": "^8.4.1",
