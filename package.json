@@ -113,7 +113,7 @@
         "acorn": "^7.0.0",
         "babel-eslint": "^10.0.1",
         "babel-loader": "^8.0.5",
-        "commitizen": "^4.0.2",
+        "commitizen": "^4.0.3",
         "copy-webpack-plugin": "^5.0.2",
         "coveralls": "^3.0.3",
         "cz-conventional-changelog": "^3.0.1",
