@@ -102,7 +102,7 @@
         "@babel/core": "^7.7.7",
         "@babel/plugin-proposal-class-properties": "^7.7.4",
         "@babel/preset-typescript": "^7.7.7",
-        "@commitlint/cli": "^8.3.3",
+        "@commitlint/cli": "^8.3.4",
         "@commitlint/config-conventional": "^8.3.4",
         "@commitlint/travis-cli": "^8.3.3",
         "@types/copy-webpack-plugin": "^5.0.0",
