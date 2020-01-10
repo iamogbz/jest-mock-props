@@ -1,6 +1,6 @@
 # Jest Mock Props
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/iamogbz/jest-mock-props.svg)](https://greenkeeper.io/)
+[![Dependabot badge](https://badgen.net/dependabot/iamogbz/jest-mock-props/?icon=dependabot)](https://app.dependabot.com)
 [![Dependencies](https://david-dm.org/iamogbz/jest-mock-props.svg)](https://github.com/iamogbz/jest-mock-props)
 [![Build Status](https://travis-ci.org/iamogbz/jest-mock-props.svg?branch=master)](https://travis-ci.org/iamogbz/jest-mock-props)
 [![Coverage Status](https://coveralls.io/repos/github/iamogbz/jest-mock-props/badge.svg?branch=master&cache=1)](https://coveralls.io/github/iamogbz/jest-mock-props?branch=master)
