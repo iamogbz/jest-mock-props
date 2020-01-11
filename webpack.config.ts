@@ -27,7 +27,7 @@ const configuration: Configuration = {
         path: path.resolve(__dirname, "lib"),
     },
     plugins: [
-        new CopyPlugin(["package.json"]),
+        new CopyPlugin(["package.json", "README.md"]),
         new CopyPlugin([{ from: "src/@types/index.d.ts", to: "main.d.ts" }]),
     ],
     resolve: {
