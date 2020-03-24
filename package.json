@@ -121,7 +121,7 @@
         "husky": "^4.2.3",
         "jest": "^24.9.0",
         "lint-staged": "^10.0.9",
-        "prettier": "^2.0.1",
+        "prettier": "^2.0.2",
         "rxjs": "^6.5.4",
         "semantic-release": "^17.0.4",
         "ts-jest": "^24.3.0",
