@@ -95,7 +95,7 @@
         "node": ">=8.0.0"
     },
     "peerDependencies": {
-        "jest": "^24.0.0"
+        "jest": ">=24.0.0"
     },
     "devDependencies": {
         "@babel/cli": "^7.10.1",
