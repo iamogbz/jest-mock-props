@@ -5,13 +5,14 @@
     "main": "main.js",
     "types": "main.d.ts",
     "scripts": {
-        "commitlint": "commitlint-travis",
         "build": "webpack --mode=production",
         "build-watch": "webpack --mode=development  --watch",
-        "test": "jest",
-        "test-watch": "jest --watch",
         "commit": "git-cz",
-        "release": "semantic-release"
+        "commitlint": "commitlint-travis",
+        "lint": "eslint",
+        "release": "semantic-release",
+        "test": "jest",
+        "test-watch": "jest --watch"
     },
     "release": {
         "plugins": [
