@@ -111,7 +111,7 @@
         "@commitlint/travis-cli": "^11.0.0",
         "@types/copy-webpack-plugin": "^6.0.0",
         "@types/jest": "^26.0.13",
-        "@types/node": "^14.10.0",
+        "@types/node": "^14.10.1",
         "@types/source-map": "^0.5.2",
         "@types/webpack": "^4.41.22",
         "acorn": "^8.0.1",
