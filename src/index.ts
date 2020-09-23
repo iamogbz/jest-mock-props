@@ -8,7 +8,6 @@ export const messages = {
         },
         noMethodSpy: (p: string): string =>
             `Cannot spy on the property '${p}' because it is a function. Please use \`jest.spyOn\`.`,
-        noMockClear: "Cannot `mockClear` on property spy.",
         noUnconfigurableSpy: (p: string): string =>
             `Cannot spy on the property '${p}' because it is not configurable`,
     },
@@ -55,7 +54,7 @@ export class MockProp<T> implements MockProp<T> {
     }
 
     public mockClear = (): void => {
-        throw new Error(messages.error.noMockClear);
+        this.mockReset();
     };
 
     public mockReset = (): void => {
@@ -167,6 +166,9 @@ export const isMockProp: IsMockProp = (object, propName) => {
     return Boolean(spiedOnProps && spiedOnProps.has(propName));
 };
 
+export const clearAllMocks = () =>
+    getAllSpies().forEach((spy) => spy.mockClear());
+
 export const resetAllMocks = () =>
     getAllSpies().forEach((spy) => spy.mockReset());
 
@@ -181,10 +183,12 @@ export const spyOnProp: SpyOnProp = (object, propName) => {
 };
 
 export const extend = (jestInstance: typeof jest): void => {
+    const jestClearAll = jestInstance.clearAllMocks;
     const jestResetAll = jestInstance.resetAllMocks;
     const jestRestoreAll = jestInstance.restoreAllMocks;
     Object.assign(jestInstance, {
         isMockProp,
+        clearAllMocks: () => jestClearAll() && clearAllMocks(),
         resetAllMocks: () => jestResetAll() && resetAllMocks(),
         restoreAllMocks: () => jestRestoreAll() && restoreAllMocks(),
         spyOnProp,

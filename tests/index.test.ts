@@ -131,22 +131,31 @@ it("restores mocked object property", () => {
     expect(jest.isMockProp(testObject, "prop1")).toBe(false);
 });
 
-it("resets mocked object property in jest.resetAllMocks", () => {
-    const testObject = { ...mockObject };
-    const mockValue1 = 99;
-    const mockValue2 = 100;
-    jest.spyOnProp(testObject, "prop1").mockValue(mockValue1);
-    jest.spyOnProp(testObject, "prop2").mockValue(mockValue2);
-    expect(testObject.prop1).toEqual(mockValue1);
-    expect(testObject.prop2).toEqual(mockValue2);
-    expect(jest.isMockProp(testObject, "prop1")).toBe(true);
-    expect(jest.isMockProp(testObject, "prop2")).toBe(true);
-    jest.resetAllMocks();
-    expect(testObject.prop1).toEqual("1");
-    expect(testObject.prop2).toEqual(2);
-    expect(jest.isMockProp(testObject, "prop1")).toBe(true);
-    expect(jest.isMockProp(testObject, "prop2")).toBe(true);
-});
+it.each`
+    jestOperation
+    ${"clearAllMocks"}
+    ${"resetAllMocks"}
+`(
+    "resets mocked object property in jest.$jestOperation",
+    ({ jestOperation }: { jestOperation: string }) => {
+        const testObject = { ...mockObject };
+        const mockValue1 = 99;
+        const mockValue2 = 100;
+        jest.spyOnProp(testObject, "prop1").mockValue(mockValue1);
+        jest.spyOnProp(testObject, "prop2").mockValue(mockValue2);
+        expect(testObject.prop1).toEqual(mockValue1);
+        expect(testObject.prop2).toEqual(mockValue2);
+        expect(jest.isMockProp(testObject, "prop1")).toBe(true);
+        expect(jest.isMockProp(testObject, "prop2")).toBe(true);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
+        jest[jestOperation]();
+        expect(testObject.prop1).toEqual("1");
+        expect(testObject.prop2).toEqual(2);
+        expect(jest.isMockProp(testObject, "prop1")).toBe(true);
+        expect(jest.isMockProp(testObject, "prop2")).toBe(true);
+    },
+);
 
 it("restores mocked object property in jest.restoreAllMocks", () => {
     const testObject = { ...mockObject };
@@ -225,11 +234,4 @@ it("does not mock object setter property", () => {
     expect(jest.isMockProp(testObject, "propY")).toBe(false);
     testObject.propY = 4;
     expect(testObject._value).toEqual(4);
-});
-
-it("throws error on mockClear", () => {
-    const testObject = { ...mockObject };
-    const spy = jest.spyOnProp(testObject, "prop1");
-    expect(jest.isMockProp(testObject, "prop1")).toBe(true);
-    expect(spy.mockClear).toThrowErrorMatchingSnapshot();
 });
