@@ -1,6 +1,8 @@
-import * as mockProps from "index";
+import { Obj } from "jest-mock-props";
+import * as mockProps from "src/index";
 
-const mockObject: AnyObject = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockObject: Obj<any> = {
     fn1: (): string => "fnReturnValue",
     prop1: "1",
     prop2: 2,
@@ -16,6 +18,8 @@ beforeAll(() => mockProps.extend(jest));
 afterAll(jest.restoreAllMocks);
 
 it("mock object undefined property", () => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
     const spy = jest.spyOnProp(process.env, "undefinedProp").mockValue(1);
     expect(spyConsoleWarn).toHaveBeenCalledWith(
         mockProps.messages.warn.noUndefinedSpy("undefinedProp"),
@@ -30,7 +34,7 @@ it("mock object undefined property", () => {
 });
 
 it("mocks object property value undefined", () => {
-    const testObject: AnyObject = { propUndefined: undefined };
+    const testObject: Obj<number> = { propUndefined: undefined };
     const spy = jest.spyOnProp(testObject, "propUndefined").mockValue(1);
     expect(testObject.propUndefined).toEqual(1);
     testObject.propUndefined = 5;
@@ -42,7 +46,7 @@ it("mocks object property value undefined", () => {
 });
 
 it("mocks object property value null", () => {
-    const testObject: AnyObject = { propNull: null };
+    const testObject: Obj<number> = { propNull: null };
     const spy = jest.spyOnProp(testObject, "propNull").mockValue(2);
     expect(testObject.propNull).toEqual(2);
     testObject.propNull = 10;
@@ -175,7 +179,7 @@ it("does not remock object property", () => {
     expect(jest.isMockProp(testObject2, "prop1")).toBe(false);
 });
 
-it.each([undefined, null, 99, "value", true].map(v => [v && typeof v, v]))(
+it.each([undefined, null, 99, "value", true].map((v) => [v && typeof v, v]))(
     "does not mock '%s' primitive",
     (_, v: any) => {
         expect(() =>

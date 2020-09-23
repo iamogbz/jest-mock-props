@@ -1,11 +1,11 @@
 {
     "compilerOptions": {
-        "baseUrl": "./src",
+        "baseUrl": ".",
         "declaration": true,
-        "outDir": "./built",
-        "paths": { "*": ["*", "./@types/*"] },
+        "outDir": "./lib",
         "target": "es6",
         "allowSyntheticDefaultImports": true,
+        "moduleResolution": "node",
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
         "noImplicitAny": true
