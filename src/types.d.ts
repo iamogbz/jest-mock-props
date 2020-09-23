@@ -1,21 +1,23 @@
-export interface Soap<T> {
-    [key: string]: T;
-}
+declare module "jest-mock-props" {
+    export type Obj<T> = Record<string, T>;
 
-export interface MockProp<T> {
-    mockClear(): void;
-    mockReset(): void;
-    mockRestore(): void;
-    mockValue(v: T): MockProp<T>;
-    mockValueOnce(v: T): MockProp<T>;
-}
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    export type Spyable = Obj<any>;
 
-declare global {
-    namespace jest {
-        function isMockProp<T = unknown>(object: T, propName?: string): boolean;
-        function spyOnProp<T = unknown>(
-            object: Soap<T>,
-            propName: string,
-        ): MockProp<T>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    export type ValueOf<O> = O extends Record<infer _, infer T> ? T : any;
+
+    export interface MockProp<T> {
+        mockClear(): void;
+        mockReset(): void;
+        mockRestore(): void;
+        mockValue(v: T): MockProp<T>;
+        mockValueOnce(v: T): MockProp<T>;
     }
+
+    export type IsMockProp = <T>(object: Obj<T>, propName: string) => boolean;
+    export type SpyOnProp = (
+        object: Spyable,
+        propName: string,
+    ) => MockProp<ValueOf<typeof object>>;
 }

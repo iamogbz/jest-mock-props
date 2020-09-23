@@ -1,4 +1,4 @@
-import { Soap } from "./types";
+import { IsMockProp, Obj, Spyable, SpyOnProp, ValueOf } from "jest-mock-props";
 
 export const messages = {
     error: {
@@ -22,11 +22,12 @@ export const log = (...args: unknown[]): void => log.default(...args);
 // eslint-disable-next-line no-console
 log.default = log.warn = (...args: unknown[]): void => console.warn(...args);
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const spiedOn: Map<Soap<any>, Map<string, MockProp<any>>> = new Map();
+const spiedOn: Map<
+    Spyable,
+    Map<string, MockProp<ValueOf<Spyable>>>
+> = new Map();
 const getAllSpies = () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const spies: Set<MockProp<any>> = new Set();
+    const spies: Set<MockProp<ValueOf<Spyable>>> = new Set();
     for (const spiedProps of spiedOn.values()) {
         for (const spy of spiedProps.values()) {
             spies.add(spy);
@@ -38,12 +39,12 @@ const getAllSpies = () => {
 class MockProp<T> implements MockProp<T> {
     private initialPropDescriptor: PropertyDescriptor;
     private initialPropValue: T;
-    private object: Soap<T>;
+    private object: Obj<T>;
     private propName: string;
     private propValue: T;
     private propValues: T[] = [];
 
-    constructor({ object, propName }: { object: Soap<T>; propName: string }) {
+    constructor({ object, propName }: { object: Obj<T>; propName: string }) {
         this.initialPropDescriptor = this.validate({ object, propName });
         this.object = object;
         this.propName = propName;
@@ -102,7 +103,7 @@ class MockProp<T> implements MockProp<T> {
         object,
         propName,
     }: {
-        object: Soap<T>;
+        object: Obj<T>;
         propName: string;
     }): PropertyDescriptor => {
         const acceptedTypes: Set<string> = new Set(["function", "object"]);
@@ -161,25 +162,23 @@ class MockProp<T> implements MockProp<T> {
     private nextValue = (): T => this.propValues.shift() || this.propValue;
 }
 
-export function isMockProp<T>(object: Soap<T>, propName: string): boolean {
+export const isMockProp: IsMockProp = (object, propName) => {
     const spiedOnProps = spiedOn.get(object);
     return Boolean(spiedOnProps && spiedOnProps.has(propName));
-}
+};
 
-export function resetAllMocks(): void {
+export const resetAllMocks = () =>
     getAllSpies().forEach((spy) => spy.mockReset());
-}
 
-export function restoreAllMocks(): void {
+export const restoreAllMocks = () =>
     getAllSpies().forEach((spy) => spy.mockRestore());
-}
 
-export function spyOnProp<T>(object: Soap<T>, propName: string): MockProp<T> {
+export const spyOnProp: SpyOnProp = (object, propName) => {
     if (isMockProp(object, propName)) {
         return spiedOn.get(object).get(propName);
     }
     return new MockProp({ object, propName });
-}
+};
 
 export const extend = (jestInstance: typeof jest): void => {
     const jestResetAll = jestInstance.resetAllMocks;
