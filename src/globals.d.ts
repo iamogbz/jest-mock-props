@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { IsMockProp, SpyOnProp } from "jest-mock-props";
+import { IsMockProp, SpyOnProp } from "./types";
 
 declare global {
     namespace jest {

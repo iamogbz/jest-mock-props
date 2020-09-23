@@ -1,4 +1,4 @@
-import { Obj } from "jest-mock-props";
+import { Obj } from "src/types";
 import * as mockProps from "src/index";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

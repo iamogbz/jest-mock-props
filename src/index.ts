@@ -1,4 +1,4 @@
-import { IsMockProp, Obj, Spyable, SpyOnProp, ValueOf } from "jest-mock-props";
+import { IsMockProp, Obj, Spyable, SpyOnProp, ValueOf } from "./types";
 
 export const messages = {
     error: {
@@ -36,7 +36,7 @@ const getAllSpies = () => {
     return spies;
 };
 
-class MockProp<T> implements MockProp<T> {
+export class MockProp<T> implements MockProp<T> {
     private initialPropDescriptor: PropertyDescriptor;
     private initialPropValue: T;
     private object: Obj<T>;
