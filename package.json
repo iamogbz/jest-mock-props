@@ -9,9 +9,9 @@
         "typings"
     ],
     "scripts": {
-        "build": "npm run clean && npm run compile-types && webpack --mode=production",
+        "build": "webpack --mode=production",
         "build-watch": "webpack --mode=development --watch",
-        "clean": "rm -rf lib",
+        "clean": "rm -rf ./lib",
         "commit": "git-cz",
         "commitlint": "commitlint-travis",
         "compile-types": "tsc --emitDeclarationOnly --project tsconfig.prod.json",

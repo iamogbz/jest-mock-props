@@ -33,6 +33,9 @@ const configuration: Configuration = {
         new WebpackCompilerPlugin({
             name: "Compile Types",
             listeners: {
+                buildStart: () => {
+                    execSync(`npm run clean`);
+                },
                 compileStart: (): void => {
                     execSync("npm run compile-types");
                 },
