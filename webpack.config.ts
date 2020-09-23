@@ -1,7 +1,10 @@
-import * as CopyPlugin from "copy-webpack-plugin";
+import { execSync } from "child_process";
 import * as path from "path";
 import { Configuration } from "webpack";
+import * as CopyWebpackPlugin from "copy-webpack-plugin";
+import { WebpackCompilerPlugin } from "webpack-compiler-plugin";
 
+const outputPath = path.resolve(__dirname, "lib");
 const configuration: Configuration = {
     devtool: "source-map",
     entry: "./src",
@@ -22,13 +25,23 @@ const configuration: Configuration = {
         ],
     },
     output: {
-        filename: "main.js",
+        filename: "index.js",
         libraryTarget: "commonjs",
-        path: path.resolve(__dirname, "lib"),
+        path: outputPath,
     },
     plugins: [
-        new CopyPlugin({ patterns: ["package.json", "README.md"]}),
-        new CopyPlugin({ patterns: [{ from: "src/@types/index.d.ts", to: "main.d.ts" }]}),
+        new WebpackCompilerPlugin({
+            name: "Compile Types",
+            listeners: {
+                compileStart: (): void => {
+                    execSync("npm run compile-types");
+                },
+            },
+            stageMessages: null,
+        }),
+        new CopyWebpackPlugin({
+            patterns: [{ from: "./src/types.d.ts", to: outputPath }],
+        }),
     ],
     resolve: {
         extensions: [".js", ".ts"],
@@ -36,4 +49,4 @@ const configuration: Configuration = {
     },
 };
 
-export default configuration; // tslint:disable-line
+export default configuration;

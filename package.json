@@ -2,14 +2,20 @@
     "name": "jest-mock-props",
     "version": "0.0.0",
     "description": "Mock module and object properties",
-    "main": "main.js",
-    "types": "main.d.ts",
+    "main": "lib/index.js",
+    "types": "lib/index.d.ts",
+    "files": [
+        "lib",
+        "typings"
+    ],
     "scripts": {
-        "build": "webpack --mode=production",
-        "build-watch": "webpack --mode=development  --watch",
+        "build": "npm run clean && npm run compile-types && webpack --mode=production",
+        "build-watch": "webpack --mode=development --watch",
+        "clean": "rm -rf lib",
         "commit": "git-cz",
         "commitlint": "commitlint-travis",
-        "lint": "eslint",
+        "compile-types": "tsc --emitDeclarationOnly --project tsconfig.prod.json",
+        "lint": "eslint . --ext .js,.ts",
         "release": "semantic-release",
         "test": "jest",
         "test-watch": "jest --watch"
@@ -30,8 +36,7 @@
     "jest": {
         "preset": "ts-jest",
         "moduleDirectories": [
-            "./src",
-            "./tests",
+            ".",
             "./node_modules"
         ],
         "setupFilesAfterEnv": [
@@ -45,9 +50,6 @@
         "coverageDirectory": "./artifacts/coverage"
     },
     "commitlint": {
-        "rules": {
-            "header-max-length": [0, "always", 0]
-        },
         "extends": [
             "@commitlint/config-conventional"
         ]
@@ -58,14 +60,9 @@
         }
     },
     "lint-staged": {
-        "*.js": [
-            "eslint"
-        ],
-        "*.ts": [
-            "tslint"
-        ],
         "*.{js,ts}": [
-            "jest --bail --findRelatedTests"
+            "npm run lint",
+            "npm test -- --bail --findRelatedTests"
         ]
     },
     "husky": {
@@ -114,6 +111,8 @@
         "@types/node": "^14.11.2",
         "@types/source-map": "^0.5.2",
         "@types/webpack": "^4.41.22",
+        "@typescript-eslint/eslint-plugin": "^2.34.0",
+        "@typescript-eslint/parser": "^2.34.0",
         "acorn": "^8.0.1",
         "babel-eslint": "^10.1.0",
         "babel-loader": "^8.1.0",
@@ -122,6 +121,10 @@
         "coveralls": "^3.1.0",
         "cz-conventional-changelog": "^3.3.0",
         "eslint": "^7.9.0",
+        "eslint-config-airbnb": "^18.2.0",
+        "eslint-config-prettier": "^6.11.0",
+        "eslint-plugin-import": "^2.22.0",
+        "eslint-plugin-prettier": "^3.1.4",
         "husky": "^4.3.0",
         "jest": "^24.9.0",
         "lint-staged": "^10.4.0",
@@ -130,9 +133,9 @@
         "semantic-release": "^17.1.2",
         "ts-jest": "^24.3.0",
         "ts-node": "^9.0.0",
-        "tslint": "^6.1.3",
         "typescript": "^4.0.3",
         "webpack": "^4.44.2",
-        "webpack-cli": "^3.3.12"
+        "webpack-cli": "^3.3.12",
+        "webpack-compiler-plugin": "^1.1.1"
     }
 }

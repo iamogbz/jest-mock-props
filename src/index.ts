@@ -1,27 +1,32 @@
+import { Soap } from "./types";
+
 export const messages = {
     error: {
-        invalidSpy: (o: any) => {
+        invalidSpy: (o: object): string => {
             const helpfulValue = `${o ? typeof o : ""}'${o}'`;
             return `Cannot spyOn on a primitive value; ${helpfulValue} given.`;
         },
-        noMethodSpy: (p: string) =>
+        noMethodSpy: (p: string): string =>
             `Cannot spy on the property '${p}' because it is a function. Please use \`jest.spyOn\`.`,
         noMockClear: "Cannot `mockClear` on property spy.",
-        noUnconfigurableSpy: (p: string) =>
+        noUnconfigurableSpy: (p: string): string =>
             `Cannot spy on the property '${p}' because it is not configurable`,
     },
     warn: {
-        noUndefinedSpy: (p: string) =>
+        noUndefinedSpy: (p: string): string =>
             `Spying on an undefined property '${p}'.`,
     },
 };
 
-export const log = (...args: any[]) => log.default(...args);
-log.default = log.warn = (...args: any[]) => console.warn(...args); // tslint:disable-line
+export const log = (...args: unknown[]): void => log.default(...args);
+// eslint-disable-next-line no-console
+log.default = log.warn = (...args: unknown[]): void => console.warn(...args);
 
-const spiedOn: Map<object, Map<string, MockProp>> = new Map();
-const getAllSpies = (): Set<MockProp> => {
-    const spies: Set<MockProp> = new Set();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const spiedOn: Map<Soap<any>, Map<string, MockProp<any>>> = new Map();
+const getAllSpies = () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const spies: Set<MockProp<any>> = new Set();
     for (const spiedProps of spiedOn.values()) {
         for (const spy of spiedProps.values()) {
             spies.add(spy);
@@ -30,15 +35,15 @@ const getAllSpies = (): Set<MockProp> => {
     return spies;
 };
 
-class MockProp implements MockProp {
+class MockProp<T> implements MockProp<T> {
     private initialPropDescriptor: PropertyDescriptor;
-    private initialPropValue: any;
-    private object: AnyObject;
+    private initialPropValue: T;
+    private object: Soap<T>;
     private propName: string;
-    private propValue: any;
-    private propValues: any[] = [];
+    private propValue: T;
+    private propValues: T[] = [];
 
-    constructor({ object, propName }: { object: AnyObject; propName: string }) {
+    constructor({ object, propName }: { object: Soap<T>; propName: string }) {
         this.initialPropDescriptor = this.validate({ object, propName });
         this.object = object;
         this.propName = propName;
@@ -50,11 +55,11 @@ class MockProp implements MockProp {
 
     public mockClear = (): void => {
         throw new Error(messages.error.noMockClear);
-    }
+    };
 
     public mockReset = (): void => {
         this.mockValue(this.initialPropValue);
-    }
+    };
 
     public mockRestore = (): void => {
         if (this.initialPropDescriptor) {
@@ -71,24 +76,24 @@ class MockProp implements MockProp {
             delete this.object[this.propName];
         }
         this.deregister();
-    }
+    };
 
     /**
      * Set the value of the mocked property
      */
-    public mockValue = (value: any): MockProp => {
+    public mockValue = (value: T): MockProp<T> => {
         this.propValues = [];
         this.propValue = value;
         return this;
-    }
+    };
 
     /**
      * Next value returned when the property is accessed
      */
-    public mockValueOnce = (value: any): MockProp => {
+    public mockValueOnce = (value: T): MockProp<T> => {
         this.propValues.push(value);
         return this;
-    }
+    };
 
     /**
      * Determine if the object property can and should be mocked
@@ -97,7 +102,7 @@ class MockProp implements MockProp {
         object,
         propName,
     }: {
-        object: AnyObject;
+        object: Soap<T>;
         propName: string;
     }): PropertyDescriptor => {
         const acceptedTypes: Set<string> = new Set(["function", "object"]);
@@ -120,18 +125,18 @@ class MockProp implements MockProp {
             throw new Error(messages.error.noMethodSpy(propName));
         }
         return descriptor;
-    }
+    };
 
     /**
      * Attach spy to object property
      */
-    private attach = () => {
+    private attach = (): void => {
         Object.defineProperty(this.object, this.propName, {
             configurable: true,
             get: this.nextValue,
             set: this.mockValue,
         });
-    }
+    };
 
     /**
      * Track spy
@@ -141,43 +146,48 @@ class MockProp implements MockProp {
             spiedOn.set(this.object, new Map());
         }
         spiedOn.get(this.object).set(this.propName, this);
-    }
+    };
 
     /**
      * Stop tracking spy
      */
     private deregister = (): void => {
         spiedOn.get(this.object).delete(this.propName);
-    }
+    };
 
     /**
      * Shift and return the first next, defaulting to the mocked value
      */
-    private nextValue = (): any => this.propValues.shift() || this.propValue;
+    private nextValue = (): T => this.propValues.shift() || this.propValue;
 }
 
-const isMockProp = (object: any, propName: string): boolean => {
+export function isMockProp<T>(object: Soap<T>, propName: string): boolean {
     const spiedOnProps = spiedOn.get(object);
     return Boolean(spiedOnProps && spiedOnProps.has(propName));
-};
+}
 
-const resetAll = (): void => getAllSpies().forEach(spy => spy.mockReset());
-const restoreAll = (): void => getAllSpies().forEach(spy => spy.mockRestore());
+export function resetAllMocks(): void {
+    getAllSpies().forEach((spy) => spy.mockReset());
+}
 
-const spyOnProp = (object: AnyObject, propName: string): MockProp => {
+export function restoreAllMocks(): void {
+    getAllSpies().forEach((spy) => spy.mockRestore());
+}
+
+export function spyOnProp<T>(object: Soap<T>, propName: string): MockProp<T> {
     if (isMockProp(object, propName)) {
         return spiedOn.get(object).get(propName);
     }
     return new MockProp({ object, propName });
-};
+}
 
-export const extend = (jestInstance: typeof jest) => {
-    const resetAllMocks = jestInstance.resetAllMocks;
-    const restoreAllMocks = jestInstance.restoreAllMocks;
+export const extend = (jestInstance: typeof jest): void => {
+    const jestResetAll = jestInstance.resetAllMocks;
+    const jestRestoreAll = jestInstance.restoreAllMocks;
     Object.assign(jestInstance, {
         isMockProp,
-        resetAllMocks: (): void => resetAllMocks() && resetAll(),
-        restoreAllMocks: (): void => restoreAllMocks() && restoreAll(),
+        resetAllMocks: () => jestResetAll() && resetAllMocks(),
+        restoreAllMocks: () => jestRestoreAll() && restoreAllMocks(),
         spyOnProp,
     });
 };
