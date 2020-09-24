@@ -35,7 +35,7 @@ const getAllSpies = () => {
     return spies;
 };
 
-export class MockProp<T> implements MockProp<T> {
+export class MockProp<T> {
     private initialPropDescriptor: PropertyDescriptor;
     private initialPropValue: T;
     private object: Obj<T>;

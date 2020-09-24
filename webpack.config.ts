@@ -43,7 +43,7 @@ const configuration: Configuration = {
             stageMessages: null,
         }),
         new CopyWebpackPlugin({
-            patterns: ["types", "globals"].map((t) => ({
+            patterns: ["types"].map((t) => ({
                 from: `./src/${t}.d.ts`,
                 to: outputPath,
             })),

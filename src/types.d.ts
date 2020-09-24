@@ -1,8 +1,6 @@
 export type Obj<T> = Record<string, T>;
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Spyable = Obj<any>;
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ValueOf<O> = O extends Record<infer _, infer T> ? T : any;
 
@@ -19,3 +17,10 @@ export type SpyOnProp = (
     object: Spyable,
     propName: string,
 ) => MockProp<ValueOf<typeof object>>;
+
+declare global {
+    namespace jest {
+        const isMockProp: IsMockProp;
+        const spyOnProp: SpyOnProp;
+    }
+}
