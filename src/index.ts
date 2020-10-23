@@ -1,18 +1,16 @@
-import { IsMockProp, Obj, Spyable, SpyOnProp, ValueOf } from "./types";
-
 export const messages = {
     error: {
-        invalidSpy: (o: object): string => {
+        invalidSpy: <T>(o: T): string => {
             const helpfulValue = `${o ? typeof o : ""}'${o}'`;
             return `Cannot spyOn on a primitive value; ${helpfulValue} given.`;
         },
-        noMethodSpy: (p: string): string =>
+        noMethodSpy: <K>(p: K): string =>
             `Cannot spy on the property '${p}' because it is a function. Please use \`jest.spyOn\`.`,
-        noUnconfigurableSpy: (p: string): string =>
+        noUnconfigurableSpy: <K>(p: K): string =>
             `Cannot spy on the property '${p}' because it is not configurable`,
     },
     warn: {
-        noUndefinedSpy: (p: string): string =>
+        noUndefinedSpy: <K>(p: K): string =>
             `Spying on an undefined property '${p}'.`,
     },
 };
@@ -21,12 +19,9 @@ export const log = (...args: unknown[]): void => log.default(...args);
 // eslint-disable-next-line no-console
 log.default = log.warn = (...args: unknown[]): void => console.warn(...args);
 
-const spiedOn: Map<
-    Spyable,
-    Map<string, MockProp<ValueOf<Spyable>>>
-> = new Map();
+const spiedOn: SpyMap<Spyable> = new Map();
 const getAllSpies = () => {
-    const spies: Set<MockProp<ValueOf<Spyable>>> = new Set();
+    const spies: Set<MockProp> = new Set();
     for (const spiedProps of spiedOn.values()) {
         for (const spy of spiedProps.values()) {
             spies.add(spy);
@@ -35,15 +30,15 @@ const getAllSpies = () => {
     return spies;
 };
 
-export class MockProp<T> {
+class MockPropInstance<T, K extends keyof T> implements MockProp<T, K> {
     private initialPropDescriptor: PropertyDescriptor;
-    private initialPropValue: T;
-    private object: Obj<T>;
-    private propName: string;
-    private propValue: T;
-    private propValues: T[] = [];
+    private initialPropValue: T[K];
+    private object: T;
+    private propName: K;
+    private propValue: T[K];
+    private propValues: T[K][] = [];
 
-    constructor({ object, propName }: { object: Obj<T>; propName: string }) {
+    constructor({ object, propName }: { object: T; propName: K }) {
         this.initialPropDescriptor = this.validate({ object, propName });
         this.object = object;
         this.propName = propName;
@@ -81,7 +76,7 @@ export class MockProp<T> {
     /**
      * Set the value of the mocked property
      */
-    public mockValue = (value: T): MockProp<T> => {
+    public mockValue = (value: T[K]): MockProp<T, K> => {
         this.propValues = [];
         this.propValue = value;
         return this;
@@ -90,7 +85,7 @@ export class MockProp<T> {
     /**
      * Next value returned when the property is accessed
      */
-    public mockValueOnce = (value: T): MockProp<T> => {
+    public mockValueOnce = (value: T[K]): MockProp<T, K> => {
         this.propValues.push(value);
         return this;
     };
@@ -102,8 +97,8 @@ export class MockProp<T> {
         object,
         propName,
     }: {
-        object: Obj<T>;
-        propName: string;
+        object: T;
+        propName: K;
     }): PropertyDescriptor => {
         const acceptedTypes: Set<string> = new Set(["function", "object"]);
         if (object === null || !acceptedTypes.has(typeof object)) {
@@ -158,7 +153,7 @@ export class MockProp<T> {
     /**
      * Shift and return the first next, defaulting to the mocked value
      */
-    private nextValue = (): T => this.propValues.shift() || this.propValue;
+    private nextValue = (): T[K] => this.propValues.shift() || this.propValue;
 }
 
 export const isMockProp: IsMockProp = (object, propName) => {
@@ -175,12 +170,12 @@ export const resetAllMocks = () =>
 export const restoreAllMocks = () =>
     getAllSpies().forEach((spy) => spy.mockRestore());
 
-export const spyOnProp: SpyOnProp = (object, propName) => {
+export function spyOnProp<T, K extends keyof T>(object: T, propName: K) {
     if (isMockProp(object, propName)) {
         return spiedOn.get(object).get(propName);
     }
-    return new MockProp({ object, propName });
-};
+    return new MockPropInstance({ object, propName });
+}
 
 export const extend = (jestInstance: typeof jest): void => {
     const jestClearAll = jestInstance.clearAllMocks;

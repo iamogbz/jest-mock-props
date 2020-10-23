@@ -1,13 +1,14 @@
 import { execSync } from "child_process";
 import * as path from "path";
+import * as fs from "fs-extra";
 import { Configuration } from "webpack";
-import * as CopyWebpackPlugin from "copy-webpack-plugin";
 import { WebpackCompilerPlugin } from "webpack-compiler-plugin";
 
+const entryPath = path.resolve(__dirname, "src");
 const outputPath = path.resolve(__dirname, "lib");
 const configuration: Configuration = {
     devtool: "source-map",
-    entry: "./src",
+    entry: entryPath,
     mode: "production",
     module: {
         rules: [
@@ -38,15 +39,14 @@ const configuration: Configuration = {
                 },
                 compileStart: (): void => {
                     execSync("npm run compile-types");
+                    fs.copySync(entryPath, outputPath, {
+                        filter: (src) =>
+                            fs.statSync(src).isDirectory() ||
+                            src.endsWith(".d.ts"),
+                    });
                 },
             },
             stageMessages: null,
-        }),
-        new CopyWebpackPlugin({
-            patterns: ["types"].map((t) => ({
-                from: `./src/${t}.d.ts`,
-                to: outputPath,
-            })),
         }),
     ],
     resolve: {

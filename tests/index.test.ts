@@ -1,8 +1,7 @@
-import { Obj } from "src/types";
 import * as mockProps from "src/index";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockObject: Obj<any> = {
+const mockObject: Spyable = {
     fn1: (): string => "fnReturnValue",
     prop1: "1",
     prop2: 2,
@@ -34,7 +33,7 @@ it("mock object undefined property", () => {
 });
 
 it("mocks object property value undefined", () => {
-    const testObject: Obj<number> = { propUndefined: undefined };
+    const testObject: Record<string, number> = { propUndefined: undefined };
     const spy = jest.spyOnProp(testObject, "propUndefined").mockValue(1);
     expect(testObject.propUndefined).toEqual(1);
     testObject.propUndefined = 5;
@@ -46,7 +45,7 @@ it("mocks object property value undefined", () => {
 });
 
 it("mocks object property value null", () => {
-    const testObject: Obj<number> = { propNull: null };
+    const testObject: Record<string, number> = { propNull: null };
     const spy = jest.spyOnProp(testObject, "propNull").mockValue(2);
     expect(testObject.propNull).toEqual(2);
     testObject.propNull = 10;

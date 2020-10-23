@@ -1,26 +1,18 @@
-export type Obj<T> = Record<string, T>;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type Spyable = Obj<any>;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type ValueOf<O> = O extends Record<infer _, infer T> ? T : any;
+type Spyable = any;
 
-export interface MockProp<T> {
+interface MockProp<T = Spyable, K extends keyof T = keyof T> {
     mockClear(): void;
     mockReset(): void;
     mockRestore(): void;
-    mockValue(v: T): MockProp<T>;
-    mockValueOnce(v: T): MockProp<T>;
+    mockValue(v: T[K]): MockProp<T, K>;
+    mockValueOnce(v: T[K]): MockProp<T, K>;
 }
 
-export type IsMockProp = <T>(object: Obj<T>, propName: string) => boolean;
-export type SpyOnProp = (
-    object: Spyable,
-    propName: string,
-) => MockProp<ValueOf<typeof object>>;
+type IsMockProp = <T, K extends keyof T>(object: T, propName: K) => boolean;
+type SpyOnProp<T> = (
+    object: T,
+    propName: keyof T,
+) => MockProp<T[typeof propName]>;
 
-declare global {
-    namespace jest {
-        const isMockProp: IsMockProp;
-        const spyOnProp: SpyOnProp;
-    }
-}
+type SpyMap<T> = Map<T, Map<keyof T, MockProp<T, keyof T>>>;
