@@ -5,8 +5,8 @@ export interface MockProp<T = Spyable, K extends keyof T = keyof T> {
     mockClear(): void;
     mockReset(): void;
     mockRestore(): void;
-    mockValue(v: T[K]): MockProp<T, K>;
-    mockValueOnce(v: T[K]): MockProp<T, K>;
+    mockValue(v?: T[K]): MockProp<T, K>;
+    mockValueOnce(v?: T[K]): MockProp<T, K>;
 }
 
 export type SpyMap<T> = Map<T, Map<keyof T, MockProp<T, keyof T>>>;
