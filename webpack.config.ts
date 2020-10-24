@@ -1,6 +1,5 @@
 import { execSync } from "child_process";
 import * as path from "path";
-import * as fs from "fs-extra";
 import { Configuration } from "webpack";
 import { WebpackCompilerPlugin } from "webpack-compiler-plugin";
 
@@ -39,18 +38,13 @@ const configuration: Configuration = {
                 },
                 compileStart: (): void => {
                     execSync("npm run compile-types");
-                    fs.copySync(entryPath, outputPath, {
-                        filter: (src) =>
-                            fs.statSync(src).isDirectory() ||
-                            src.endsWith(".d.ts"),
-                    });
                 },
             },
             stageMessages: null,
         }),
     ],
     resolve: {
-        extensions: [".js", ".ts"],
+        extensions: [".js", ".ts", ".d.ts"],
         modules: [path.resolve("./src"), path.resolve("./node_modules")],
     },
 };

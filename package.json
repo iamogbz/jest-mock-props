@@ -34,6 +34,15 @@
             ".",
             "./node_modules"
         ],
+        "moduleFileExtensions": [
+            "js",
+            "d.ts",
+            "ts",
+            "tsx",
+            "jsx",
+            "json",
+            "node"
+        ],
         "setupFilesAfterEnv": [
             "./config/setupTests.ts"
         ],

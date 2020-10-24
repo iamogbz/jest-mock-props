@@ -1,4 +1,6 @@
+import messages from "src/utils/messages";
 import * as mockProps from "src/index";
+import { Spyable } from "typings/globals";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockObject: Spyable = {
@@ -21,7 +23,7 @@ it("mock object undefined property", () => {
     // @ts-ignore
     const spy = jest.spyOnProp(process.env, "undefinedProp").mockValue(1);
     expect(spyConsoleWarn).toHaveBeenCalledWith(
-        mockProps.messages.warn.noUndefinedSpy("undefinedProp"),
+        messages.warn.noUndefinedSpy("undefinedProp"),
     );
     expect(process.env.undefinedProp).toEqual(1);
     process.env.undefinedProp = "5";
@@ -197,7 +199,7 @@ it.each([undefined, null, 99, "value", true].map((v) => [v && typeof v, v]))(
 );
 
 it("does not mock object non-configurable property", () => {
-    const testObject = {};
+    const testObject: Spyable = {};
     Object.defineProperty(testObject, "propUnconfigurable", { value: 2 });
     expect(() =>
         jest.spyOnProp(testObject, "propUnconfigurable"),

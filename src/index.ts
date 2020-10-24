@@ -1,23 +1,13 @@
-export const messages = {
-    error: {
-        invalidSpy: <T>(o: T): string => {
-            const helpfulValue = `${o ? typeof o : ""}'${o}'`;
-            return `Cannot spyOn on a primitive value; ${helpfulValue} given.`;
-        },
-        noMethodSpy: <K>(p: K): string =>
-            `Cannot spy on the property '${p}' because it is a function. Please use \`jest.spyOn\`.`,
-        noUnconfigurableSpy: <K>(p: K): string =>
-            `Cannot spy on the property '${p}' because it is not configurable`,
-    },
-    warn: {
-        noUndefinedSpy: <K>(p: K): string =>
-            `Spying on an undefined property '${p}'.`,
-    },
-};
-
-export const log = (...args: unknown[]): void => log.default(...args);
-// eslint-disable-next-line no-console
-log.default = log.warn = (...args: unknown[]): void => console.warn(...args);
+import {
+    ExtendJest,
+    IsMockProp,
+    MockProp,
+    Spyable,
+    SpyMap,
+    SpyOnProp,
+} from "../typings/globals";
+import log from "./utils/logging";
+import messages from "./utils/messages";
 
 const spiedOn: SpyMap<Spyable> = new Map();
 const getAllSpies = () => {
@@ -170,14 +160,14 @@ export const resetAllMocks = () =>
 export const restoreAllMocks = () =>
     getAllSpies().forEach((spy) => spy.mockRestore());
 
-export function spyOnProp<T, K extends keyof T>(object: T, propName: K) {
+export const spyOnProp: SpyOnProp = (object, propName) => {
     if (isMockProp(object, propName)) {
         return spiedOn.get(object).get(propName);
     }
     return new MockPropInstance({ object, propName });
-}
+};
 
-export const extend = (jestInstance: typeof jest): void => {
+export const extend: ExtendJest = (jestInstance: typeof jest): void => {
     const jestClearAll = jestInstance.clearAllMocks;
     const jestResetAll = jestInstance.resetAllMocks;
     const jestRestoreAll = jestInstance.restoreAllMocks;
@@ -189,3 +179,5 @@ export const extend = (jestInstance: typeof jest): void => {
         spyOnProp,
     });
 };
+
+export * from "../typings/globals";
