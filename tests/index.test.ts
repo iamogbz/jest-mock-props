@@ -26,6 +26,8 @@ it("mock object undefined property", () => {
         messages.warn.noUndefinedSpy("undefinedProp"),
     );
     expect(process.env.undefinedProp).toEqual(1);
+    spy.mockValue(undefined);
+    expect(process.env.undefinedProp).toBeUndefined();
     process.env.undefinedProp = "5";
     expect(process.env.undefinedProp).toEqual("5");
     expect(jest.isMockProp(process.env, "undefinedProp")).toBe(true);
