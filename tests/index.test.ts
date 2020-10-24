@@ -1,8 +1,9 @@
-import { Obj } from "src/types";
+import messages from "src/utils/messages";
 import * as mockProps from "src/index";
+import { Spyable } from "typings/globals";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockObject: Obj<any> = {
+const mockObject: Spyable = {
     fn1: (): string => "fnReturnValue",
     prop1: "1",
     prop2: 2,
@@ -22,9 +23,11 @@ it("mock object undefined property", () => {
     // @ts-ignore
     const spy = jest.spyOnProp(process.env, "undefinedProp").mockValue(1);
     expect(spyConsoleWarn).toHaveBeenCalledWith(
-        mockProps.messages.warn.noUndefinedSpy("undefinedProp"),
+        messages.warn.noUndefinedSpy("undefinedProp"),
     );
     expect(process.env.undefinedProp).toEqual(1);
+    spy.mockValue(undefined);
+    expect(process.env.undefinedProp).toBeUndefined();
     process.env.undefinedProp = "5";
     expect(process.env.undefinedProp).toEqual("5");
     expect(jest.isMockProp(process.env, "undefinedProp")).toBe(true);
@@ -34,7 +37,7 @@ it("mock object undefined property", () => {
 });
 
 it("mocks object property value undefined", () => {
-    const testObject: Obj<number> = { propUndefined: undefined };
+    const testObject: Record<string, number> = { propUndefined: undefined };
     const spy = jest.spyOnProp(testObject, "propUndefined").mockValue(1);
     expect(testObject.propUndefined).toEqual(1);
     testObject.propUndefined = 5;
@@ -46,7 +49,7 @@ it("mocks object property value undefined", () => {
 });
 
 it("mocks object property value null", () => {
-    const testObject: Obj<number> = { propNull: null };
+    const testObject: Record<string, number> = { propNull: null };
     const spy = jest.spyOnProp(testObject, "propNull").mockValue(2);
     expect(testObject.propNull).toEqual(2);
     testObject.propNull = 10;
@@ -198,7 +201,7 @@ it.each([undefined, null, 99, "value", true].map((v) => [v && typeof v, v]))(
 );
 
 it("does not mock object non-configurable property", () => {
-    const testObject = {};
+    const testObject: Spyable = {};
     Object.defineProperty(testObject, "propUnconfigurable", { value: 2 });
     expect(() =>
         jest.spyOnProp(testObject, "propUnconfigurable"),

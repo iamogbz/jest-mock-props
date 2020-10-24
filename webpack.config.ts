@@ -1,13 +1,13 @@
 import { execSync } from "child_process";
 import * as path from "path";
 import { Configuration } from "webpack";
-import * as CopyWebpackPlugin from "copy-webpack-plugin";
 import { WebpackCompilerPlugin } from "webpack-compiler-plugin";
 
+const entryPath = path.resolve(__dirname, "src");
 const outputPath = path.resolve(__dirname, "lib");
 const configuration: Configuration = {
     devtool: "source-map",
-    entry: "./src",
+    entry: entryPath,
     mode: "production",
     module: {
         rules: [
@@ -42,15 +42,9 @@ const configuration: Configuration = {
             },
             stageMessages: null,
         }),
-        new CopyWebpackPlugin({
-            patterns: ["types"].map((t) => ({
-                from: `./src/${t}.d.ts`,
-                to: outputPath,
-            })),
-        }),
     ],
     resolve: {
-        extensions: [".js", ".ts"],
+        extensions: [".js", ".ts", ".d.ts"],
         modules: [path.resolve("./src"), path.resolve("./node_modules")],
     },
 };

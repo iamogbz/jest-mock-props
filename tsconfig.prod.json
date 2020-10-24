@@ -3,5 +3,5 @@
         "baseUrl": "./src",
     },
     "extends": "./tsconfig.json",
-    "include": ["./src"]
+    "include": ["./src", "./typings"],
 }
