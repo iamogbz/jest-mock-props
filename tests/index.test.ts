@@ -19,8 +19,7 @@ beforeAll(() => mockProps.extend(jest));
 afterAll(jest.restoreAllMocks);
 
 it("mock object undefined property", () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-    // @ts-ignore
+    // @ts-expect-error setting number to process env string value
     const spy = jest.spyOnProp(process.env, "undefinedProp").mockValue(1);
     expect(spyConsoleWarn).toHaveBeenCalledWith(
         messages.warn.noUndefinedSpy("undefinedProp"),
@@ -140,7 +139,7 @@ it.each`
     ${"resetAllMocks"}
 `(
     "resets mocked object property in jest.$jestOperation",
-    ({ jestOperation }: { jestOperation: string }) => {
+    ({ jestOperation }: { jestOperation: keyof typeof jest }) => {
         const testObject = { ...mockObject };
         const mockValue1 = 99;
         const mockValue2 = 100;
@@ -150,8 +149,7 @@ it.each`
         expect(testObject.prop2).toEqual(mockValue2);
         expect(jest.isMockProp(testObject, "prop1")).toBe(true);
         expect(jest.isMockProp(testObject, "prop2")).toBe(true);
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-        // @ts-ignore
+        // @ts-expect-error not all jest props have the same callable signature
         jest[jestOperation]();
         expect(testObject.prop1).toEqual("1");
         expect(testObject.prop2).toEqual(2);
@@ -193,8 +191,9 @@ it("does not remock object property", () => {
 
 it.each([undefined, null, 99, "value", true].map((v) => [v && typeof v, v]))(
     "does not mock '%s' primitive",
-    (_, v: any) => {
+    (_, v) => {
         expect(() =>
+            // @ts-expect-error primitives not indexable by string
             jest.spyOnProp(v, "propName"),
         ).toThrowErrorMatchingSnapshot();
     },

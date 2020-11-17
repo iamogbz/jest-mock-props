@@ -151,13 +151,13 @@ export const isMockProp: IsMockProp = (object, propName) => {
     return Boolean(spiedOnProps && spiedOnProps.has(propName));
 };
 
-export const clearAllMocks = () =>
+export const clearAllMocks = (): void =>
     getAllSpies().forEach((spy) => spy.mockClear());
 
-export const resetAllMocks = () =>
+export const resetAllMocks = (): void =>
     getAllSpies().forEach((spy) => spy.mockReset());
 
-export const restoreAllMocks = () =>
+export const restoreAllMocks = (): void =>
     getAllSpies().forEach((spy) => spy.mockRestore());
 
 export const spyOnProp: SpyOnProp = (object, propName) => {
