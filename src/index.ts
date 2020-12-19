@@ -171,11 +171,29 @@ export const extend: ExtendJest = (jestInstance: typeof jest): void => {
     const jestClearAll = jestInstance.clearAllMocks;
     const jestResetAll = jestInstance.resetAllMocks;
     const jestRestoreAll = jestInstance.restoreAllMocks;
+    const jestSpyOn = jestInstance.spyOn;
     Object.assign(jestInstance, {
         isMockProp,
         clearAllMocks: () => jestClearAll() && clearAllMocks(),
         resetAllMocks: () => jestResetAll() && resetAllMocks(),
         restoreAllMocks: () => jestRestoreAll() && restoreAllMocks(),
+        spyOn: <T>(
+            object: T,
+            propName: keyof T,
+            accessType?: "get" | "set",
+        ) => {
+            try {
+                return jestSpyOn(
+                    object,
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    propName as any,
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    accessType as any,
+                );
+            } catch (e) {
+                return spyOnProp(object, propName);
+            }
+        },
         spyOnProp,
     });
 };

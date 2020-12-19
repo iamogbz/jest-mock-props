@@ -64,6 +64,8 @@ Determines if the given object property has been mocked.
 
 #### `jest.spyOnProp(object, propertyName)`
 
+**Note**: This is aliased as `jest.spyOn` as of `v1.9.0`, overriding the existing `jest.spyOn` to use `spyOnProp` when spying on a regular object property.
+
 Creates a mock property attached to `object[propertyName]` and returns a mock property spy object, which controls all access to the object property. Repeating spying on the same object property will return the same mocked property spy.
 
 **Note**: By default, `spyOnProp` preserves the object property value. If you want to overwrite the original value, you can use `jest.spyOnProp(object, propertyName).mockValue(customValue)` or [`jest.spyOn(object, methodName, accessType?)`](https://jestjs.io/docs/en/jest-object#jestspyonobject-methodname-accesstype) to spy on a getter or a setter.
@@ -89,7 +91,7 @@ mockProps.extend(jest);
 const video = require("./video");
 
 it("mocks video length", () => {
-    const spy = jest.spyOnProp(video, "length");
+    const spy = jest.spyOn(video, "length");
     spy.mockValueOnce(200)
         .mockValueOnce(400)
         .mockValueOnce(600);

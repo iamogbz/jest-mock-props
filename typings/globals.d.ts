@@ -21,6 +21,10 @@ export type IsMockProp = <T, K extends keyof T>(
 declare global {
     namespace jest {
         const isMockProp: IsMockProp;
+        function spyOn<T, P extends NonFunctionPropertyNames<Required<T>>>(
+            object: T,
+            propName: P,
+        ): MockProp<T>;
         const spyOnProp: SpyOnProp;
     }
 }
