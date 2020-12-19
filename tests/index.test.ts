@@ -3,7 +3,7 @@ import * as mockProps from "src/index";
 import { Spyable } from "typings/globals";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockObject: Spyable = {
+const mockObject = {
     fn1: (): string => "fnReturnValue",
     prop1: "1",
     prop2: 2,
@@ -37,7 +37,7 @@ it("mock object undefined property", () => {
 
 it("mocks object property value undefined", () => {
     const testObject: Record<string, number> = { propUndefined: undefined };
-    const spy = jest.spyOnProp(testObject, "propUndefined").mockValue(1);
+    const spy = jest.spyOn(testObject, "propUndefined").mockValue(1);
     expect(testObject.propUndefined).toEqual(1);
     testObject.propUndefined = 5;
     expect(testObject.propUndefined).toEqual(5);
@@ -62,8 +62,9 @@ it("mocks object property value null", () => {
 it("mocks object property value", () => {
     const testObject = { ...mockObject };
     const mockValue = 99;
-    const spy = jest.spyOnProp(testObject, "prop1");
+    const spy = jest.spyOn(testObject, "prop1");
     expect(testObject.prop1).toEqual("1");
+    // @ts-expect-error allow string assignment
     testObject.prop1 = mockValue;
     expect(testObject.prop1).toEqual(mockValue);
     expect(testObject.prop1).toEqual(mockValue);
@@ -89,7 +90,7 @@ it("mocks object property replaces once", () => {
     const testObject = { ...mockObject };
     const mockValue1 = 99;
     const mockValue2 = 100;
-    const spy = jest.spyOnProp(testObject, "prop2").mockValueOnce(mockValue1);
+    const spy = jest.spyOn(testObject, "prop2").mockValueOnce(mockValue1);
     spy.mockValueOnce(mockValue2).mockValueOnce(101);
     expect(testObject.prop2).toEqual(mockValue1);
     expect(testObject.prop2).toEqual(mockValue2);
@@ -102,7 +103,7 @@ it("mocks object property replaces once", () => {
 it("mocks object multiple properties", () => {
     const testObject = { ...mockObject };
     const mockValue = 99;
-    const spy = jest.spyOnProp(testObject, "prop1").mockValue(mockValue);
+    const spy = jest.spyOn(testObject, "prop1").mockValue(mockValue);
     jest.spyOnProp(testObject, "prop2").mockValue(mockValue);
     spy.mockRestore();
     expect(testObject.prop1).toEqual("1");
@@ -114,7 +115,7 @@ it("mocks object multiple properties", () => {
 it("resets mocked object property", () => {
     const testObject = { ...mockObject };
     const mockValue = 99;
-    const spy = jest.spyOnProp(testObject, "prop1").mockValue(mockValue);
+    const spy = jest.spyOn(testObject, "prop1").mockValue(mockValue);
     expect(testObject.prop1).toEqual(mockValue);
     expect(jest.isMockProp(testObject, "prop1")).toBe(true);
     spy.mockReset();
@@ -143,7 +144,7 @@ it.each`
         const testObject = { ...mockObject };
         const mockValue1 = 99;
         const mockValue2 = 100;
-        jest.spyOnProp(testObject, "prop1").mockValue(mockValue1);
+        jest.spyOn(testObject, "prop1").mockValue(mockValue1);
         jest.spyOnProp(testObject, "prop2").mockValue(mockValue2);
         expect(testObject.prop1).toEqual(mockValue1);
         expect(testObject.prop2).toEqual(mockValue2);
@@ -162,7 +163,7 @@ it("restores mocked object property in jest.restoreAllMocks", () => {
     const testObject = { ...mockObject };
     const mockValue1 = 99;
     const mockValue2 = 100;
-    jest.spyOnProp(testObject, "prop1").mockValue(mockValue1);
+    jest.spyOn(testObject, "prop1").mockValue(mockValue1);
     jest.spyOnProp(testObject, "prop2").mockValue(mockValue2);
     expect(testObject.prop1).toEqual(mockValue1);
     expect(testObject.prop2).toEqual(mockValue2);
@@ -178,7 +179,7 @@ it("restores mocked object property in jest.restoreAllMocks", () => {
 it("does not remock object property", () => {
     const testObject1 = { ...mockObject };
     const mockValue = 99;
-    const spy1 = jest.spyOnProp(testObject1, "prop1").mockValue(mockValue);
+    const spy1 = jest.spyOn(testObject1, "prop1").mockValue(mockValue);
     expect(testObject1.prop1).toEqual(mockValue);
     const testObject2 = testObject1;
     const spy2 = jest.spyOnProp(testObject2, "prop1").mockValue(mockValue);
@@ -194,7 +195,7 @@ it.each([undefined, null, 99, "value", true].map((v) => [v && typeof v, v]))(
     (_, v) => {
         expect(() =>
             // @ts-expect-error primitives not indexable by string
-            jest.spyOnProp(v, "propName"),
+            jest.spyOn(v, "propName"),
         ).toThrowErrorMatchingSnapshot();
     },
 );
@@ -213,6 +214,8 @@ it("does not mock object method property", () => {
     ).toThrowErrorMatchingSnapshot();
     expect(jest.isMockProp(mockObject, "fn1")).toBe(false);
     expect(mockObject.fn1()).toEqual("fnReturnValue");
+    jest.spyOn(mockObject, "fn1").mockReturnValue("fnMockReturnValue");
+    expect(mockObject.fn1()).toEqual("fnMockReturnValue");
 });
 
 it("does not mock object getter property", () => {
@@ -221,6 +224,8 @@ it("does not mock object getter property", () => {
     ).toThrowErrorMatchingSnapshot();
     expect(jest.isMockProp(mockObject, "propZ")).toBe(false);
     expect(mockObject.propZ).toEqual("z");
+    jest.spyOn(mockObject, "propZ", "get").mockReturnValue("Z");
+    expect(mockObject.propZ).toEqual("Z");
 });
 
 it("does not mock object setter property", () => {
@@ -231,9 +236,12 @@ it("does not mock object setter property", () => {
         },
     };
     expect(() =>
-        jest.spyOnProp(testObject, "propY"),
+        jest.spyOn(testObject, "propY"),
     ).toThrowErrorMatchingSnapshot();
     expect(jest.isMockProp(testObject, "propY")).toBe(false);
+    const setterSpy = jest.spyOn(testObject, "propY", "set");
     testObject.propY = 4;
     expect(testObject._value).toEqual(4);
+    expect(setterSpy).toHaveBeenCalledTimes(1);
+    expect(setterSpy).toHaveBeenLastCalledWith(4);
 });
