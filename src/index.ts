@@ -179,17 +179,13 @@ export const extend: ExtendJest = (jestInstance: typeof jest): void => {
         restoreAllMocks: () => jestRestoreAll() && restoreAllMocks(),
         spyOn: <T>(
             object: T,
-            propName: keyof T,
-            accessType?: "get" | "set",
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            propName: any,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            accessType: any,
         ) => {
             try {
-                return jestSpyOn(
-                    object,
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    propName as any,
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    accessType as any,
-                );
+                return jestSpyOn(object, propName, accessType);
             } catch (e) {
                 return spyOnProp(object, propName);
             }
