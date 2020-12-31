@@ -19,7 +19,7 @@ jobs:
         CI: true
         COVERALLS_GIT_BRANCH: ${{ github.ref }}
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-      run: jest --coverage --coverageReporters=text-lcov | coveralls
+      run: npm run test-ci
     - name: Build
       run: npm run build
     - name: Deploy

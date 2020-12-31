@@ -18,6 +18,7 @@
         "lint": "eslint . --ext .js,.ts",
         "release": "semantic-release",
         "test": "jest",
+        "test-ci": "jest --coverage --coverageReporters=text-lcov | coveralls",
         "test-watch": "jest --watch"
     },
     "release": {
