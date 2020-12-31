@@ -1,0 +1,30 @@
+name: Build
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Setup
+      uses: actions/setup-node@v1
+      with:
+        node-version: 10
+    - name: Install
+      run: npm install
+    - name: Lint
+      run: npm run lint
+    - name: Test
+      env:
+        CI: true
+        COVERALLS_GIT_BRANCH: ${{ github.ref }}
+        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+      run: jest --coverage --coverageReporters=text-lcov | coveralls
+    - name: Build
+      run: npm run build
+    - name: Deploy
+      if: github.ref == 'refs/heads/master'
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      run: npm run release

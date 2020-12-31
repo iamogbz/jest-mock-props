@@ -2,8 +2,8 @@
 
 [![Dependabot badge](https://badgen.net/github/dependabot/iamogbz/jest-mock-props/?icon=dependabot)](https://app.dependabot.com)
 [![Dependencies](https://img.shields.io/librariesio/github/iamogbz/jest-mock-props)](https://github.com/iamogbz/jest-mock-props)
-[![Build Status](https://travis-ci.org/iamogbz/jest-mock-props.svg?branch=master)](https://travis-ci.org/iamogbz/jest-mock-props)
-[![Coverage Status](https://coveralls.io/repos/github/iamogbz/jest-mock-props/badge.svg?branch=master&cache=1)](https://coveralls.io/github/iamogbz/jest-mock-props?branch=master)
+[![Build Status](https://github.com/iamogbz/jest-mock-props/workflows/Build/badge.svg)](https://github.com/iamogbz/jest-mock-props/actions?query=workflow%3ABuild)
+[![Coverage Status](https://coveralls.io/repos/github/iamogbz/jest-mock-props/badge.svg)](https://coveralls.io/github/iamogbz/jest-mock-props)
 [![NPM Version](https://img.shields.io/npm/v/jest-mock-props.svg)](https://www.npmjs.com/package/jest-mock-props)
 
 Extends jest to allow easy mocking of object and module properties.
