@@ -77,7 +77,7 @@
         }
     },
     "author": "iamogbz",
-    "license": "GPL-3.0",
+    "license": "Unlicense",
     "homepage": "https://github.com/iamogbz/jest-mock-props#readme",
     "repository": {
         "type": "git",
