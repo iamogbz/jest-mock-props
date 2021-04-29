@@ -115,7 +115,7 @@
         "@types/source-map": "^0.5.2",
         "@typescript-eslint/eslint-plugin": "^4.22.0",
         "@typescript-eslint/parser": "^4.22.0",
-        "acorn": "^8.2.1",
+        "acorn": "^8.2.2",
         "babel-eslint": "^10.1.0",
         "babel-loader": "^8.2.2",
         "commitizen": "^4.2.3",
