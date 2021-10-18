@@ -9,7 +9,7 @@ jobs:
     - name: Setup
       uses: actions/setup-node@v1
       with:
-        node-version: 10
+        node-version: 14
     - name: Install
       run: npm install
     - name: Lint
