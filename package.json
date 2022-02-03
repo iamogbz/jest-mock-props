@@ -104,7 +104,7 @@
         "jest": ">=24.0.0"
     },
     "devDependencies": {
-        "@babel/cli": "^7.16.8",
+        "@babel/cli": "^7.17.0",
         "@babel/core": "^7.17.0",
         "@babel/plugin-proposal-class-properties": "^7.16.7",
         "@babel/preset-typescript": "^7.16.7",
