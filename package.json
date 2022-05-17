@@ -108,7 +108,7 @@
         "@babel/core": "^7.17.10",
         "@babel/plugin-proposal-class-properties": "^7.17.12",
         "@babel/preset-typescript": "^7.17.12",
-        "@commitlint/cli": "^16.3.0",
+        "@commitlint/cli": "^17.0.0",
         "@commitlint/config-conventional": "^16.2.4",
         "@types/jest": "^27.5.0",
         "@types/node": "^17.0.34",
