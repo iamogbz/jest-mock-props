@@ -8,6 +8,8 @@
 
 Extends jest to allow easy mocking of object and module properties.
 
+> Also see [jest-mock-module](https://github.com/iamogbz/jest-mock-module) for non destructive spying on imported modules by automatically shimming module properties
+
 ## Introduction
 
 ### Getting Started
