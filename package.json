@@ -110,7 +110,7 @@
         "@babel/preset-typescript": "^7.23.2",
         "@commitlint/cli": "^18.2.0",
         "@commitlint/config-conventional": "^18.1.0",
-        "@types/jest": "^29.5.7",
+        "@types/jest": "^29.5.8",
         "@types/node": "^20.8.10",
         "@types/source-map": "^0.5.7",
         "@typescript-eslint/eslint-plugin": "^6.9.1",
