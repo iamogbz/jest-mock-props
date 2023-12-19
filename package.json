@@ -114,7 +114,7 @@
         "@types/node": "^20.10.5",
         "@types/source-map": "^0.5.7",
         "@typescript-eslint/eslint-plugin": "^6.14.0",
-        "@typescript-eslint/parser": "^6.14.0",
+        "@typescript-eslint/parser": "^6.15.0",
         "acorn": "^8.11.2",
         "babel-eslint": "^10.1.0",
         "babel-loader": "^9.1.3",
