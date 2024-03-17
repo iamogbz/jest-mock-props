@@ -111,3 +111,6 @@ it("mocks video length", () => {
     expect(jest.isMockProp(video, "length")).toBe(false);
 });
 ```
+
+### Related
+* [Spy on JS modules using jest mock](https://www.npmjs.com/package/jest-mock-module)
