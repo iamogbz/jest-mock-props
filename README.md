@@ -64,13 +64,15 @@ The jest object needs to be extended in every test file. This allows mocked prop
 
 Determines if the given object property has been mocked.
 
-#### `jest.spyOnProp(object, propertyName)`
+#### `jest.spyOn(object, propertyName, accessType?)`
 
-**Note**: This is aliased as `jest.spyOn` as of `v1.9.0`, overriding the existing `jest.spyOn` to use `spyOnProp` when spying on a regular object property.
+**Note**: This is originally available as `jest.spyOnProp`, and since `v1.9.0` the existing `jest.spyOn` is overridden to use `spyOnProp` when spying on a regular object property.
 
 Creates a mock property attached to `object[propertyName]` and returns a mock property spy object, which controls all access to the object property. Repeating spying on the same object property will return the same mocked property spy.
 
 **Note**: By default, `spyOnProp` preserves the object property value. If you want to overwrite the original value, you can use `jest.spyOnProp(object, propertyName).mockValue(customValue)` or [`jest.spyOn(object, methodName, accessType?)`](https://jestjs.io/docs/en/jest-object#jestspyonobject-methodname-accesstype) to spy on a getter or a setter.
+
+Use the `set` access type value to ensure unwrittable properties are overridden.
 
 ## Example
 
@@ -113,4 +115,5 @@ it("mocks video length", () => {
 ```
 
 ### Related
+
 * [Spy on JS modules using jest mock](https://www.npmjs.com/package/jest-mock-module)
