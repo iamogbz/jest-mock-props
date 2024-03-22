@@ -126,6 +126,7 @@ it("resets mocked object property", () => {
 it("restores mocked object property", () => {
     const testObject = { ...mockObject };
     const mockValue = 99;
+    // @ts-expect-error the mock value type does not match the initial
     const spy = jest.spyOnProp(testObject, "prop1").mockValue(mockValue);
     expect(testObject.prop1).toEqual(mockValue);
     expect(jest.isMockProp(testObject, "prop1")).toBe(true);
@@ -182,6 +183,7 @@ it("does not remock object property", () => {
     const spy1 = jest.spyOn(testObject1, "prop1").mockValue(mockValue);
     expect(testObject1.prop1).toEqual(mockValue);
     const testObject2 = testObject1;
+    // @ts-expect-error the mock value type does not match the initial
     const spy2 = jest.spyOnProp(testObject2, "prop1").mockValue(mockValue);
     expect(spy2).toBe(spy1);
     expect(jest.isMockProp(testObject2, "prop1")).toBe(true);
@@ -200,12 +202,37 @@ it.each([undefined, null, 99, "value", true].map((v) => [v && typeof v, v]))(
     },
 );
 
-it("does not mock object non-configurable property", () => {
+it("does not mock object non-configurable property without accessType", () => {
     const testObject: Spyable = {};
     Object.defineProperty(testObject, "propUnconfigurable", { value: 2 });
     expect(() =>
         jest.spyOnProp(testObject, "propUnconfigurable"),
     ).toThrowErrorMatchingSnapshot();
+});
+
+it("does not mock object non-configurable property when using accessType get", () => {
+    const testObject: Spyable = {};
+    Object.defineProperty(testObject, "propUnconfigurable", { value: 2 });
+    expect(() =>
+        jest.spyOnProp(testObject, "propUnconfigurable", "get"),
+    ).toThrowErrorMatchingSnapshot();
+});
+
+it("mocks object non-configurable property value when using accessType set", () => {
+    const testObject: Spyable = {};
+    const initialValue = 2;
+    Object.defineProperty(testObject, "propUnconfigurable", {
+        value: initialValue,
+    });
+    const spy = jest.spyOn(testObject, "propUnconfigurable", "set");
+    expect(testObject.propUnconfigurable).toEqual(initialValue);
+    const mockValue = 4;
+    testObject.propUnconfigurable = mockValue;
+    expect(testObject.propUnconfigurable).toEqual(mockValue);
+    expect(testObject.propUnconfigurable).toEqual(mockValue);
+    spy.mockRestore();
+    expect(testObject.propUnconfigurable).toEqual(initialValue);
+    expect(jest.isMockProp(testObject, "propUnconfigurable")).toBe(false);
 });
 
 it("does not mock object method property", () => {
