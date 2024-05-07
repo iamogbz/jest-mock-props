@@ -111,7 +111,7 @@
         "@commitlint/cli": "^19.3.0",
         "@commitlint/config-conventional": "^19.2.2",
         "@types/jest": "^29.5.12",
-        "@types/node": "^20.12.8",
+        "@types/node": "^20.12.10",
         "@types/source-map": "^0.5.7",
         "@typescript-eslint/eslint-plugin": "^7.8.0",
         "@typescript-eslint/parser": "^7.8.0",
