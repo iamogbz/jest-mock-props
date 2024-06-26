@@ -14,6 +14,8 @@ exports[`does not mock object getter property 1`] = `"Cannot spy on the property
 
 exports[`does not mock object method property 1`] = `"Cannot spy on the property 'fn1' because it is a function. Please use \`jest.spyOn\`."`;
 
-exports[`does not mock object non-configurable property 1`] = `"Cannot spy on the property 'propUnconfigurable' because it is not configurable"`;
+exports[`does not mock object non-configurable property when using accessType get 1`] = `"Cannot spy on the property 'propUnconfigurable' because it is not configurable. Use 'set' as the \`accessType\` to overwrite."`;
+
+exports[`does not mock object non-configurable property without accessType 1`] = `"Cannot spy on the property 'propUnconfigurable' because it is not configurable. Use 'set' as the \`accessType\` to overwrite."`;
 
 exports[`does not mock object setter property 1`] = `"Cannot spy on the property 'propY' because it is a function. Please use \`jest.spyOn\`."`;

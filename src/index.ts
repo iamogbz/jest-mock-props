@@ -1,7 +1,9 @@
 import {
+    AnyObject,
     ExtendJest,
     IsMockProp,
     MockProp,
+    PropertyAccessors,
     Spyable,
     SpyMap,
     SpyOnProp,
@@ -20,7 +22,12 @@ const getAllSpies = () => {
     return spies;
 };
 
-class MockPropInstance<T, K extends keyof T> implements MockProp<T, K> {
+class MockPropInstance<
+    T extends AnyObject,
+    K extends keyof T,
+    A extends PropertyAccessors<T, K>,
+> implements MockProp<T, K>
+{
     private initialPropDescriptor: PropertyDescriptor;
     private initialPropValue: T[K];
     private object: T;
@@ -28,13 +35,13 @@ class MockPropInstance<T, K extends keyof T> implements MockProp<T, K> {
     private propValue: T[K];
     private propValues: T[K][] = [];
 
-    constructor({ object, propName }: { object: T; propName: K }) {
-        this.initialPropDescriptor = this.validate({ object, propName });
-        this.object = object;
-        this.propName = propName;
-        this.initialPropValue = object[propName];
+    constructor(params: { object: T; propName: K; accessType: A }) {
+        this.initialPropDescriptor = this.validate(params);
+        this.object = params.object;
+        this.propName = params.propName;
+        this.initialPropValue = params.object[params.propName];
         this.propValue = this.initialPropValue;
-        this.attach();
+        this.attach(params.accessType);
         this.register();
     }
 
@@ -86,9 +93,11 @@ class MockPropInstance<T, K extends keyof T> implements MockProp<T, K> {
     private validate = ({
         object,
         propName,
+        accessType,
     }: {
         object: T;
         propName: K;
+        accessType: A;
     }): PropertyDescriptor => {
         const acceptedTypes: Set<string> = new Set(["function", "object"]);
         if (object === null || !acceptedTypes.has(typeof object)) {
@@ -99,7 +108,7 @@ class MockPropInstance<T, K extends keyof T> implements MockProp<T, K> {
             log.warn(messages.warn.noUndefinedSpy(propName));
             return descriptor;
         }
-        if (!descriptor.configurable) {
+        if (!descriptor.configurable && accessType !== "set") {
             throw new Error(messages.error.noUnconfigurableSpy(propName));
         }
         if (
@@ -115,7 +124,12 @@ class MockPropInstance<T, K extends keyof T> implements MockProp<T, K> {
     /**
      * Attach spy to object property
      */
-    private attach = (): void => {
+    private attach = (accessType?: A): void => {
+        // if using set access type then redefine configurable property
+        if (accessType === "set") {
+            // TODO: Cannot delete property unconfigurable `propName` of `object`
+            delete this.object[this.propName];
+        }
         Object.defineProperty(this.object, this.propName, {
             configurable: true,
             get: this.nextValue,
@@ -160,11 +174,11 @@ export const resetAllMocks = (): void =>
 export const restoreAllMocks = (): void =>
     getAllSpies().forEach((spy) => spy.mockRestore());
 
-export const spyOnProp: SpyOnProp = (object, propName) => {
+export const spyOnProp: SpyOnProp = (object, propName, accessType) => {
     if (isMockProp(object, propName)) {
         return spiedOn.get(object).get(propName);
     }
-    return new MockPropInstance({ object, propName });
+    return new MockPropInstance({ object, propName, accessType });
 };
 
 export const extend: ExtendJest = (jestInstance: typeof jest): void => {
@@ -177,17 +191,20 @@ export const extend: ExtendJest = (jestInstance: typeof jest): void => {
         clearAllMocks: () => jestClearAll() && clearAllMocks(),
         resetAllMocks: () => jestResetAll() && resetAllMocks(),
         restoreAllMocks: () => jestRestoreAll() && restoreAllMocks(),
-        spyOn: <T>(
+        spyOn: <
+            T extends AnyObject,
+            Key extends keyof T,
+            A extends PropertyAccessors<T, Key> = PropertyAccessors<T, Key>,
+        >(
             object: T,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            propName: any,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            accessType: any,
+            propName: Key,
+            accessType: A,
         ) => {
             try {
+                // @ts-expect-error incompatiblity with access types
                 return jestSpyOn(object, propName, accessType);
             } catch (e) {
-                return spyOnProp(object, propName);
+                return spyOnProp(object, propName, accessType);
             }
         },
         spyOnProp,
